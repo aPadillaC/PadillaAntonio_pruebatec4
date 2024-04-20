@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -23,6 +24,7 @@ public class Flight {
     private String seatType;
     private Double flightPrice;
     private LocalDate date;
+    private Integer availableSeats;
     private boolean isDeleted;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -32,7 +34,8 @@ public class Flight {
     )
     private List<Client> clientList;
 
-    public Flight(Integer id, String flightCode, String origin, String destination, String seatType, Double flightPrice, LocalDate date, List<Client> clientList) {
+
+    public Flight(Integer id, String flightCode, String origin, String destination, String seatType, Double flightPrice, LocalDate date, Integer availableSeats) {
         this.id = id;
         this.flightCode = flightCode;
         this.origin = origin;
@@ -40,7 +43,27 @@ public class Flight {
         this.seatType = seatType;
         this.flightPrice = flightPrice;
         this.date = date;
-        this.clientList = clientList;
+        this.availableSeats = availableSeats;
+        this.clientList = new ArrayList<>();
         this.isDeleted = false;
     }
+
+
+    public void addClient(Client client) {
+        this.clientList.add(client);
+        this.availableSeats--;
+    }
+
+    public void removeClient(Client client) {
+        this.clientList.remove(client);
+        this.availableSeats++;
+    }
+
+
+    public void addClient(List<Client> clientList) {
+        this.clientList.addAll(clientList);
+        this.availableSeats -= clientList.size();
+    }
+
+
 }
