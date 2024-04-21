@@ -1,17 +1,25 @@
 package com.hackaboss.agenciaTurismo.controller;
 
-import com.hackaboss.agenciaTurismo.service.FlightService;
+
+import com.hackaboss.agenciaTurismo.service.IClientService;
+import com.hackaboss.agenciaTurismo.service.IFlightBookingService;
+import com.hackaboss.agenciaTurismo.service.IFlightService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping
+@RequestMapping("agency/flights")
 public class FightController {
 
     @Autowired
-    private FlightService flightService;
+    private IFlightService flightService;
+
+    @Autowired
+    private IFlightBookingService flightBookingService;
+
+    @Autowired
+    private IClientService clientService;
 
 
 //    @GetMapping
@@ -20,10 +28,10 @@ public class FightController {
 //        flightService.createFlightAndAddClients();
 //    }
 
-    @GetMapping
-    public String hello(){
-
-        flightService.deleteFlight();
-        return "Hello World";
-    }
+//    @GetMapping
+//    public String hello(){
+//
+//        flightService.deleteFlight();
+//        return "Hello World";
+//    }
 }

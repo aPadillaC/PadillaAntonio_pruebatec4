@@ -27,12 +27,8 @@ public class Flight {
     private Integer availableSeats;
     private boolean isDeleted;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "flightBooking",
-            joinColumns = @JoinColumn(name = "flight_id"),
-            inverseJoinColumns = @JoinColumn(name = "client_id")
-    )
-    private List<Client> clientList;
+    @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
+    private List<FlightBooking> flightBookingList;
 
 
     public Flight(Integer id, String flightCode, String origin, String destination, String seatType, Double flightPrice, LocalDate date, Integer availableSeats) {
@@ -44,26 +40,26 @@ public class Flight {
         this.flightPrice = flightPrice;
         this.date = date;
         this.availableSeats = availableSeats;
-        this.clientList = new ArrayList<>();
+        this.flightBookingList = new ArrayList<>();
         this.isDeleted = false;
     }
 
 
-    public void addClient(Client client) {
-        this.clientList.add(client);
-        this.availableSeats--;
-    }
+//    public void addClient(Client client) {
+//        this.clientList.add(client);
+//        this.availableSeats--;
+//    }
 
-    public void removeClient(Client client) {
-        this.clientList.remove(client);
-        this.availableSeats++;
-    }
+//    public void removeClient(Client client) {
+//        this.clientList.remove(client);
+//        this.availableSeats++;
+//    }
 
 
-    public void addClient(List<Client> clientList) {
-        this.clientList.addAll(clientList);
-        this.availableSeats -= clientList.size();
-    }
+//    public void addClient(List<Client> clientList) {
+//        this.clientList.addAll(clientList);
+//        this.availableSeats -= clientList.size();
+//    }
 
 
 }

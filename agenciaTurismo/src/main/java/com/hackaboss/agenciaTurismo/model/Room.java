@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,6 +20,9 @@ public class Room {
     private Integer id;
     private String roomType;
     private Double roomPrice;
+    private String roomCode;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
     private boolean isBooked;
     private boolean isDeleted;
 
@@ -23,13 +30,24 @@ public class Room {
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    private List<RoomBooking> roomBookingList;
 
-    public Room(Integer id, String roomType, Double roomPrice, Hotel hotel) {
+
+    public Room(Integer id, String roomType, Double roomPrice, LocalDate dateFrom, LocalDate dateTo){
         this.id = id;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
-        this.hotel = hotel;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.roomBookingList = new ArrayList<>();
         this.isBooked = false;
         this.isDeleted = false;
+    }
+
+
+
+    public void setRoomCode(String hotelCode, Integer num) {
+        this.roomCode = hotelCode + "/R" + num;
     }
 }

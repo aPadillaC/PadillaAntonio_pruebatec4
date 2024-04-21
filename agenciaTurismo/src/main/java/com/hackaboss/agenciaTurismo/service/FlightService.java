@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class FlightService {
+public class FlightService implements IFlightService{
 
     @Autowired
     private FlightRepository flightRepository;
@@ -20,6 +20,7 @@ public class FlightService {
     @Autowired
     private ClientRepository clientRepository;
 
+    /**
     public void createFlightAndAddClients() {
         // Create a new flight
         Flight flight = new Flight();
@@ -76,4 +77,5 @@ public class FlightService {
 
         flightRepository.save(flight);
     }
+     */
 }
