@@ -1,14 +1,21 @@
 package com.hackaboss.agenciaTurismo.service;
 
+import com.hackaboss.agenciaTurismo.dto.ClientDTO;
 import com.hackaboss.agenciaTurismo.dto.HotelDTO;
+import com.hackaboss.agenciaTurismo.dto.RoomBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.RoomDTO;
+import com.hackaboss.agenciaTurismo.model.Client;
 import com.hackaboss.agenciaTurismo.model.Hotel;
 import com.hackaboss.agenciaTurismo.model.Room;
+import com.hackaboss.agenciaTurismo.model.RoomBooking;
+import com.hackaboss.agenciaTurismo.repository.ClientRepository;
 import com.hackaboss.agenciaTurismo.repository.HotelRepository;
+import com.hackaboss.agenciaTurismo.repository.RoomBookingRepository;
 import com.hackaboss.agenciaTurismo.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -21,6 +28,14 @@ public class HotelService implements IHotelService{
 
     @Autowired
     private RoomRepository roomRepository;
+
+
+    @Autowired
+    private ClientRepository clientRepository;
+
+
+    @Autowired
+    private RoomBookingRepository roomBookingRepository;
 
 
     @Override
@@ -60,6 +75,7 @@ public class HotelService implements IHotelService{
         roomRepository.save(room);
 
         hotelRepository.save(hotel);
+
     }
 
 
@@ -155,6 +171,66 @@ public class HotelService implements IHotelService{
     }
 
 
+
+    @Override
+    public List<RoomDTO> findByCityAndDate(String city, LocalDate dateTo, LocalDate dateFrom) {
+
+        return roomRepository.findByCityAndDate(city, dateTo, dateFrom).stream()
+                .map(this::toRoomDTO)
+                .collect(Collectors.toList());
+    }
+
+
+
+    @Override
+    public Double addRoomBooking(Integer roomId, RoomBookingDTO roomBookingDTO) {
+
+        Room room = roomRepository.findByIdAndNotDeleted(roomId).get();
+
+        ClientDTO clientDTO = roomBookingDTO.getClient();
+
+        Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
+
+        Client client = new Client();
+
+        if(existingClient == null) {
+
+            client.setName(clientDTO.getName());
+            client.setLastName(clientDTO.getLastName());
+            client.setNif(clientDTO.getNif());
+            client.setEmail(clientDTO.getEmail());
+            clientRepository.save(client);
+        }
+
+        else client = existingClient;
+
+        RoomBooking roomBooking = new RoomBooking();
+
+        roomBooking.setDateFrom(roomBookingDTO.getDateFrom());
+        roomBooking.setDateTo(roomBookingDTO.getDateTo());
+        roomBooking.setClient(client);
+        roomBooking.setRoom(room);
+        roomBooking.setBookingCode(room.getRoomCode(), room.getRoomBookingList().size() + 1);
+
+        roomBookingRepository.save(roomBooking);
+
+        room.getRoomBookingList().add(roomBooking);
+
+        roomRepository.save(room);
+
+        return room.getRoomPrice();
+
+    }
+
+    @Override
+    public List<RoomBookingDTO> getRoomBookings() {
+
+        return roomBookingRepository.findIncompleteAndNotDeletedBookings().stream()
+                .map(this::toRoomBookingDTO)
+                .collect(Collectors.toList());
+    }
+
+
     @Override
     public HotelDTO getHotelById(Integer hotelId) {
 
@@ -165,12 +241,24 @@ public class HotelService implements IHotelService{
 
     private RoomDTO toRoomDTO(Room room){
 
-        return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode());
+        return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(), room.getDateTo(), room.getRoomBookingList());
     }
 
 
     private HotelDTO toHotelDTO(Hotel hotel){
 
         return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode(), hotel.getRooms().stream().map(this::toRoomDTO).collect(Collectors.toList()));
+    }
+
+
+    private RoomBookingDTO toRoomBookingDTO(RoomBooking roomBooking){
+
+        return new RoomBookingDTO(roomBooking.getBookingCode(), roomBooking.getDateFrom(), roomBooking.getDateTo(), roomBooking.getRoom().getHotel().getCity(), roomBooking.getRoom().getHotel().getName(), roomBooking.getRoom().getRoomCode(), roomBooking.getRoom().getRoomType(), toClientDTO(roomBooking.getClient()));
+    }
+
+
+    private ClientDTO toClientDTO(Client client){
+
+        return new ClientDTO(client.getName(), client.getLastName(), client.getNif(), client.getEmail());
     }
 }

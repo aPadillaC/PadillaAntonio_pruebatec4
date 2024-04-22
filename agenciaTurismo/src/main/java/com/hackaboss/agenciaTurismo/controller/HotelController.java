@@ -1,9 +1,11 @@
 package com.hackaboss.agenciaTurismo.controller;
 
 import com.hackaboss.agenciaTurismo.dto.HotelDTO;
+import com.hackaboss.agenciaTurismo.dto.RoomBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.RoomDTO;
 import com.hackaboss.agenciaTurismo.model.Hotel;
 import com.hackaboss.agenciaTurismo.model.Room;
+import com.hackaboss.agenciaTurismo.model.RoomBooking;
 import com.hackaboss.agenciaTurismo.service.IClientService;
 import com.hackaboss.agenciaTurismo.service.IHotelService;
 import com.hackaboss.agenciaTurismo.service.IRoomBookingService;
@@ -11,6 +13,7 @@ import com.hackaboss.agenciaTurismo.service.IRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -112,7 +115,36 @@ public class HotelController {
         return "Room deleted";
     }
 
-    // 10. Add room-booking
+    // 10. Find rooms by conditions
+    @GetMapping("/rooms")
+    public List<RoomDTO> getRoomsByCityAndDate(@RequestParam("city") String city,
+                                               @RequestParam("dateTo") LocalDate dateTo,
+                                               @RequestParam("dateFrom") LocalDate dateFrom) {
+
+        return hotelService.findByCityAndDate(city, dateTo, dateFrom);
+    }
+
+
+
+    // 11. Add room-booking
+    @PostMapping("/{roomId}/rooms-booking/new")
+    public String addRoomBooking(@PathVariable Integer roomId,
+                                @RequestBody RoomBookingDTO roomBookingDTO){
+
+        Double price = hotelService.addRoomBooking(roomId, roomBookingDTO);
+
+        return "Room booking added, price: " + price + " €";
+    }
+
+
+
+    // 12. Get room-bookings
+    @GetMapping("/rooms-booking")
+    public List<RoomBookingDTO> getRoomBookings(){
+
+        return hotelService.getRoomBookings();
+    }
+
 
 
 }

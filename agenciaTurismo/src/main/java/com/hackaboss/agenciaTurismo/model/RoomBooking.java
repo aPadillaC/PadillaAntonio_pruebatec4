@@ -35,7 +35,6 @@ public class RoomBooking {
 
     public RoomBooking(Integer id, LocalDate dateFrom, LocalDate dateTo, Room room, Client client) {
         this.id = id;
-        this.bookingCode = room.getRoomCode() + "-bR-" + room.getRoomBookingList().size() + 1;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.room = room;

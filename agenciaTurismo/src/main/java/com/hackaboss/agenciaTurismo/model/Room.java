@@ -46,7 +46,6 @@ public class Room {
     }
 
 
-
     public void setRoomCode(String hotelCode, Integer num) {
         this.roomCode = hotelCode + "/R" + num;
     }
