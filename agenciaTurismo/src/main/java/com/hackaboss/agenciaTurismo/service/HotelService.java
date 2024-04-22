@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -120,13 +122,15 @@ public class HotelService implements IHotelService{
     @Override
     public RoomDTO getRoomById(Integer hotelId, Integer roomId) {
 
-        return hotelRepository.findByIdAndNotDeleted(hotelId)
-                .map(hotel -> hotel.getRooms().stream()
-                    .filter(room -> room.getId().equals(roomId))
-                    .map(this::toRoomDTO)
-                    .findFirst()
-                    .orElse(null))
+        //!TODO: Ver si hacer borrado fisico de RoomBooking
+
+        return  hotelRepository.findByIdAndNotDeleted(hotelId)
+                .flatMap(hotel -> hotel.getRooms().stream()
+                        .filter(room -> room.getId().equals(roomId))
+                        .map(this::toRoomDTO)
+                        .findFirst())
                 .orElse(null);
+
     }
 
     @Override
@@ -167,6 +171,8 @@ public class HotelService implements IHotelService{
 
         room.setDeleted(true);
 
+        roomRepository.save(room);
+
 
     }
 
@@ -186,6 +192,13 @@ public class HotelService implements IHotelService{
     public Double addRoomBooking(Integer roomId, RoomBookingDTO roomBookingDTO) {
 
         Room room = roomRepository.findByIdAndNotDeleted(roomId).get();
+
+        boolean bookingExists = isBookingExists(room, roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
+
+        //!TODO: Hacer Excepcion
+        if (bookingExists) {
+            return 0.0;
+        }
 
         ClientDTO clientDTO = roomBookingDTO.getClient();
 
@@ -214,6 +227,10 @@ public class HotelService implements IHotelService{
 
         roomBookingRepository.save(roomBooking);
 
+        boolean roomBookedEveryday = isRoomBookedEveryday(roomId, room.getDateFrom(), room.getDateTo());
+
+        room.setBooked(roomBookedEveryday);
+
         room.getRoomBookingList().add(roomBooking);
 
         roomRepository.save(room);
@@ -222,12 +239,67 @@ public class HotelService implements IHotelService{
 
     }
 
+
+    private boolean isBookingExists(Room room, LocalDate dateFrom, LocalDate dateTo) {
+
+        List<RoomBooking> bookings = roomBookingRepository.findBookingsInDateRange(room.getId(), dateFrom, dateTo);
+
+        return !bookings.isEmpty();
+
+    }
+
+
+
+    private boolean isRoomBookedEveryday(Integer roomId, LocalDate dateFrom, LocalDate dateTo) {
+        List<RoomBooking> bookings = roomBookingRepository.findBookingsForRoomId(roomId);
+        long totalDays = ChronoUnit.DAYS.between(dateFrom, dateTo) + 1; // +1 to include both start and end date
+        long bookedDays = bookings.stream()
+                .mapToLong(booking -> ChronoUnit.DAYS.between(booking.getDateFrom(), booking.getDateTo()) + 1)
+                .sum();
+        return bookedDays >= totalDays;
+    }
+
+
     @Override
     public List<RoomBookingDTO> getRoomBookings() {
 
         return roomBookingRepository.findIncompleteAndNotDeletedBookings().stream()
                 .map(this::toRoomBookingDTO)
                 .collect(Collectors.toList());
+    }
+
+
+
+    @Override
+    public void deleteRoomBooking(Integer roomBookingId) {
+
+        RoomBooking roomBooking = roomBookingRepository.findById(roomBookingId).get();
+
+        roomBooking.setDeleted(true);
+
+        roomBookingRepository.save(roomBooking);
+    }
+
+
+    @Override
+    public void updateRoomBooking(Integer roomBookingId, RoomBookingDTO roomBookingDTO) {
+
+        RoomBooking roomBooking = roomBookingRepository.findByIdAndNotDeleted(roomBookingId).get();
+
+        if(roomBookingDTO.getDateFrom() != null) roomBooking.setDateFrom(roomBookingDTO.getDateFrom());
+        if(roomBookingDTO.getDateTo() != null) roomBooking.setDateTo(roomBookingDTO.getDateTo());
+
+        boolean bookingExists = isBookingExists(roomBooking.getRoom(), roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
+
+        if(!bookingExists) {
+
+            roomBookingRepository.save(roomBooking);
+            boolean roomBookedEveryday = isRoomBookedEveryday(roomBooking.getRoom().getId(), roomBooking.getRoom().getDateFrom(), roomBooking.getRoom().getDateTo());
+
+            roomBooking.getRoom().setBooked(roomBookedEveryday);
+        }
+
+        //!TODO: Hacer Excepcion para caso de que ya exista una reserva en esas fechas
     }
 
 
@@ -241,7 +313,7 @@ public class HotelService implements IHotelService{
 
     private RoomDTO toRoomDTO(Room room){
 
-        return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(), room.getDateTo(), room.getRoomBookingList());
+        return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(), room.getDateTo(), room.getRoomBookingList().stream().map(this::toRoomBookingDTO).collect(Collectors.toList()));
     }
 
 

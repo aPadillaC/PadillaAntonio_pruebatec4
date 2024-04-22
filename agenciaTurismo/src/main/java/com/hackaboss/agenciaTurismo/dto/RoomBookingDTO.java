@@ -42,4 +42,10 @@ public class RoomBookingDTO {
     }
 
 
+    public RoomBookingDTO(LocalDate dateFrom, LocalDate dateTo) {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+    }
+
+
 }

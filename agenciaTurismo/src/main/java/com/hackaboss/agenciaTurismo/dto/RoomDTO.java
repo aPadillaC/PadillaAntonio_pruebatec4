@@ -20,5 +20,5 @@ public class RoomDTO {
     private String roomCode;
     private LocalDate dateFrom;
     private LocalDate dateTo;
-    private List<RoomBooking> roomBookingList;
+    private List<RoomBookingDTO> roomBookingList;
 }

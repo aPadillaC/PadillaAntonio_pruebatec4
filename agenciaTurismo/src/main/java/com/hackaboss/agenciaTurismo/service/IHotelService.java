@@ -34,4 +34,8 @@ public interface IHotelService {
     Double addRoomBooking(Integer roomId, RoomBookingDTO roomBookingDTO);
 
     List<RoomBookingDTO> getRoomBookings();
+
+    void deleteRoomBooking(Integer roomBookingId);
+
+    void updateRoomBooking(Integer roomBookingId, RoomBookingDTO roomBookingDTO);
 }

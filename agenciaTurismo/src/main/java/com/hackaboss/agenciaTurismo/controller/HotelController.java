@@ -52,7 +52,7 @@ public class HotelController {
     }
 
 
-    // 3. Add hotel by id
+    // 3. Find hotel by id
     @GetMapping("/{hotelId}")
     public HotelDTO getHotelById(@PathVariable Integer hotelId){
 
@@ -115,6 +115,7 @@ public class HotelController {
         return "Room deleted";
     }
 
+
     // 10. Find rooms by conditions
     @GetMapping("/rooms")
     public List<RoomDTO> getRoomsByCityAndDate(@RequestParam("city") String city,
@@ -144,6 +145,31 @@ public class HotelController {
 
         return hotelService.getRoomBookings();
     }
+
+
+    // 13. Delete room-booking
+    @DeleteMapping("/rooms-booking/delete/{roomBookingId}")
+    public String deleteRoomBooking(@PathVariable Integer roomBookingId){
+
+        hotelService.deleteRoomBooking(roomBookingId);
+
+        return "Room booking deleted";
+    }
+
+
+
+    // 14. Update room-booking
+    @PutMapping("/rooms-booking/edit/{roomBookingId}")
+    public String updateRoomBooking(@PathVariable Integer roomBookingId, @RequestBody RoomBookingDTO roomBookingDTO){
+
+        hotelService.updateRoomBooking(roomBookingId, roomBookingDTO);
+
+        return "Room booking updated";
+    }
+
+
+    // 15. Complete room-booking
+    //!TODO: Implement this method
 
 
 
