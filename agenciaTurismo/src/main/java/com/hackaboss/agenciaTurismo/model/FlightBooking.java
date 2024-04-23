@@ -31,12 +31,18 @@ public class FlightBooking {
             inverseJoinColumns = @JoinColumn(name = "client_id"))
     private List<Client> clientList;
 
-    public FlightBooking(Integer id,Flight flight, String seatType, List<Client> clientList) {
+    public FlightBooking(Integer id,Flight flight, String seatType, Double seatPrice, List<Client> clientList) {
         this.id = id;
-        this.bookingCode = flight.getFlightCode() + "-bF-" + flight.getFlightBookingList().size() + 1;
         this.flight = flight;
         this.seatType = seatType;
+        this.seatPrice = seatPrice;
         this.clientList = clientList;
         this.isDeleted = false;
     }
+
+    public void setBookingCode(String flightCode, Integer num) {
+
+        this.bookingCode = flightCode + "/bF" + num;
+    }
+
 }

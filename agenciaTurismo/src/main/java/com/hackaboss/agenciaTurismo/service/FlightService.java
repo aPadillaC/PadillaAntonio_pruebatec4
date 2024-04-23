@@ -8,6 +8,7 @@ import com.hackaboss.agenciaTurismo.model.Flight;
 import com.hackaboss.agenciaTurismo.model.Client;
 import com.hackaboss.agenciaTurismo.model.FlightBooking;
 import com.hackaboss.agenciaTurismo.model.Hotel;
+import com.hackaboss.agenciaTurismo.repository.FlightBookingRepository;
 import com.hackaboss.agenciaTurismo.repository.FlightRepository;
 import com.hackaboss.agenciaTurismo.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,10 @@ public class FlightService implements IFlightService{
 
     @Autowired
     private ClientRepository clientRepository;
+
+
+    @Autowired
+    private FlightBookingRepository flightBookingRepository;
 
 
 
@@ -100,6 +105,70 @@ public class FlightService implements IFlightService{
         flight.setDeleted(true);
 
         flightRepository.save(flight);
+    }
+
+    @Override
+    public Double addFlightBooking(Integer flightId, FlightBookingDTO flightBookingDTO) {
+
+        List<ClientDTO> clientDTOList = flightBookingDTO.getClientList();
+
+        List<Client> clientList = new ArrayList<>();
+
+        clientDTOList.forEach(clientDTO -> {
+
+            Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
+
+            Client client = new Client();
+
+            if(existingClient == null) {
+
+                client.setName(clientDTO.getName());
+                client.setLastName(clientDTO.getLastName());
+                client.setNif(clientDTO.getNif());
+                client.setEmail(clientDTO.getEmail());
+
+                clientRepository.save(client);
+
+                clientList.add(client);
+            }
+
+            else clientList.add(existingClient);
+        });
+
+        //!TODO: hacer excepcion
+        Flight flightExist = flightRepository.findByIdAndNotDeleted(flightId).get();
+
+        FlightBooking flightBooking = new FlightBooking();
+
+//        if (flightExist == null) {
+//
+//            throw new RuntimeException("Flight not found");
+//        }
+//        else{
+
+            if (flightExist.getAvailableSeats() == 0) {
+
+                throw new RuntimeException("No available seats");
+            }
+
+
+            flightBooking.setFlight(flightExist);
+            flightBooking.setBookingCode(flightExist.getFlightCode(), flightExist.getFlightBookingList().size() + 1);
+            flightBooking.setSeatType(flightBookingDTO.getSeatType());
+            flightBooking.setSeatPrice(flightBookingDTO.getSeatPrice());
+            flightBooking.setClientList(clientList);
+//
+//        }
+
+
+        flightBookingRepository.save(flightBooking);
+
+        flightExist.getFlightBookingList().add(flightBooking);
+
+        flightRepository.save(flightExist);
+
+        return flightBooking.getSeatPrice() * flightBooking.getClientList().size();
+
     }
 
 

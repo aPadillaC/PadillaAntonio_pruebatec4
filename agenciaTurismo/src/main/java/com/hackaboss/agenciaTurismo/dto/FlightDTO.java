@@ -16,8 +16,6 @@ public class FlightDTO {
     private String flightCode;
     private String origin;
     private String destination;
-//    private String seatType;
-//    private Double flightPrice;
     private LocalDate date;
     private Integer availableSeats;
     private List<FlightBookingDTO> flightBookingList;

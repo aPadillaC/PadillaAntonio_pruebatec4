@@ -19,6 +19,7 @@ public class FlightBookingDTO {
     private Double seatPrice;
     private List<ClientDTO> clientList;
 
+    // Constructor for get flight-Booking
     public FlightBookingDTO(String bookingCode, String seatType, Double seatPrice, List<ClientDTO> clientList) {
         this.bookingCode = bookingCode;
         this.peopleQ = clientList.size();
@@ -26,4 +27,22 @@ public class FlightBookingDTO {
         this.seatPrice = seatPrice;
         this.clientList = clientList;
     }
+
+
+    // Constructor for add flight-Booking
+    public FlightBookingDTO(String seatType, Double seatPrice, List<ClientDTO> clientList) {
+        this.seatType = seatType;
+        this.seatPrice = seatPrice;
+        this.clientList = clientList;
+        this.peopleQ = clientList.size();
+    }
+
+
+    // Constructor for Update flight-Booking
+    public FlightBookingDTO(String seatType, Double seatPrice) {
+        this.seatType = seatType;
+        this.seatPrice = seatPrice;
+    }
+
+
 }

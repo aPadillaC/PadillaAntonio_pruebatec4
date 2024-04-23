@@ -1,5 +1,6 @@
 package com.hackaboss.agenciaTurismo.service;
 
+import com.hackaboss.agenciaTurismo.dto.FlightBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.FlightDTO;
 import com.hackaboss.agenciaTurismo.model.Flight;
 
@@ -16,4 +17,6 @@ public interface IFlightService {
     void updateFlight(Integer flightId, Flight flight);
 
     void deleteFlight(Integer flightId);
+
+    Double addFlightBooking(Integer flightId, FlightBookingDTO flightBookingDTO);
 }

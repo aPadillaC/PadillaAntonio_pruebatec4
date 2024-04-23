@@ -217,6 +217,7 @@ public class HotelService implements IHotelService{
             client.setLastName(clientDTO.getLastName());
             client.setNif(clientDTO.getNif());
             client.setEmail(clientDTO.getEmail());
+
             clientRepository.save(client);
         }
 

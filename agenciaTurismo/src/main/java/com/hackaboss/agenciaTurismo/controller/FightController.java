@@ -1,6 +1,7 @@
 package com.hackaboss.agenciaTurismo.controller;
 
 
+import com.hackaboss.agenciaTurismo.dto.FlightBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.FlightDTO;
 import com.hackaboss.agenciaTurismo.model.Flight;
 import com.hackaboss.agenciaTurismo.service.IClientService;
@@ -71,6 +72,17 @@ public class FightController {
         flightService.deleteFlight(flightId);
 
         return "Flight deleted";
+    }
+
+
+
+    //7. Add flight-booking
+    @PostMapping("/{flightId}/flight-booking/new")
+    public String addFlightBooking(@PathVariable Integer flightId, @RequestBody FlightBookingDTO flightBookingDTO){
+
+        Double price = flightService.addFlightBooking(flightId, flightBookingDTO);
+
+        return "Flight-booking added, price: " + price + " €";
     }
 
 //    @GetMapping
