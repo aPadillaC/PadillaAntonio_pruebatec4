@@ -1,7 +1,13 @@
 package com.hackaboss.agenciaTurismo.service;
 
+import com.hackaboss.agenciaTurismo.dto.ClientDTO;
+import com.hackaboss.agenciaTurismo.dto.FlightBookingDTO;
+import com.hackaboss.agenciaTurismo.dto.FlightDTO;
+import com.hackaboss.agenciaTurismo.exception.FlightAlreadyExistsException;
 import com.hackaboss.agenciaTurismo.model.Flight;
 import com.hackaboss.agenciaTurismo.model.Client;
+import com.hackaboss.agenciaTurismo.model.FlightBooking;
+import com.hackaboss.agenciaTurismo.model.Hotel;
 import com.hackaboss.agenciaTurismo.repository.FlightRepository;
 import com.hackaboss.agenciaTurismo.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +25,100 @@ public class FlightService implements IFlightService{
 
     @Autowired
     private ClientRepository clientRepository;
+
+
+
+    @Override
+    public void addFlight(Flight flight) {
+
+        //!TODO: hacer excepcion
+        List<Flight> existingFlight = flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(flight.getOrigin(), flight.getDestination(), flight.getDate()).get();
+
+        if (!existingFlight.isEmpty()) {
+
+            throw new FlightAlreadyExistsException("A flight with the same characteristics already exists.");
+
+        }
+
+        flight.setFlightCode(flight.getOrigin(), flight.getDestination(), existingFlight.size() + 1);
+
+        flightRepository.save(flight);
+    }
+
+
+    @Override
+    public List<FlightDTO> getFlights() {
+
+        return flightRepository.findAllNotDeleted().stream()
+                .map(this::toFlightDTO)
+                .toList();
+    }
+
+
+    @Override
+    public FlightDTO getFlightById(Integer flightId) {
+        //!TODO: hacer excepcion personalizada
+        return flightRepository.findByIdAndNotDeleted(flightId)
+                .map(this::toFlightDTO)
+                .orElseThrow(() -> new RuntimeException("Flight not found"));
+    }
+
+
+
+    //!TODO: hacer excepcion
+    @Override
+    public void updateFlight(Integer flightId, Flight flight) {
+
+        Flight existingFlight = flightRepository.findByIdAndNotDeleted(flightId).get();
+
+        if(flight.getOrigin() != null && !flight.getOrigin().isBlank()) existingFlight.setOrigin(flight.getOrigin());
+        if(flight.getDestination() != null && !flight.getDestination().isBlank()) existingFlight.setDestination(flight.getDestination());
+        if(flight.getDate() != null) existingFlight.setDate(flight.getDate());
+        if(flight.getAvailableSeats() != null) existingFlight.setAvailableSeats(flight.getAvailableSeats());
+
+        existingFlight.setFlightCode(existingFlight.getOrigin(), existingFlight.getDestination(), existingFlight.getId());
+
+        flightRepository.save(existingFlight);
+
+    }
+
+
+
+    @Override
+    public void deleteFlight(Integer flightId) {
+
+        Flight flight = flightRepository.findByIdAndNotDeleted(flightId).get();
+
+        boolean bookingExists = flight.getFlightBookingList().stream()
+                .anyMatch(booking -> !booking.isDeleted());
+
+        //! TODO: Hacer Excepcion
+        if (bookingExists) {
+            throw new RuntimeException("Flight cannot be deleted because it has bookings.");
+        }
+
+        flight.setDeleted(true);
+
+        flightRepository.save(flight);
+    }
+
+
+    private FlightDTO toFlightDTO(Flight flight) {
+
+        return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(), flight.getAvailableSeats(), flight.getFlightBookingList().stream().map(this::toFlightBookingDTO).toList());
+    }
+
+
+    private FlightBookingDTO toFlightBookingDTO(FlightBooking flightBooking) {
+
+        return new FlightBookingDTO(flightBooking.getBookingCode(), flightBooking.getSeatType(), flightBooking.getSeatPrice(), flightBooking.getClientList().stream().map(this::toClientDTO).toList());
+    }
+
+
+    private ClientDTO toClientDTO(Client client){
+
+        return new ClientDTO(client.getName(), client.getLastName(), client.getNif(), client.getEmail());
+    }
 
     /**
     public void createFlightAndAddClients() {

@@ -21,8 +21,8 @@ public class Flight {
     private String flightCode;
     private String origin;
     private String destination;
-    private String seatType;
-    private Double flightPrice;
+//    private String seatType;
+//    private Double flightPrice;
     private LocalDate date;
     private Integer availableSeats;
     private boolean isDeleted;
@@ -31,17 +31,20 @@ public class Flight {
     private List<FlightBooking> flightBookingList;
 
 
-    public Flight(Integer id, String flightCode, String origin, String destination, String seatType, Double flightPrice, LocalDate date, Integer availableSeats) {
+    public Flight(Integer id, String origin, String destination, LocalDate date, Integer availableSeats) {
         this.id = id;
-        this.flightCode = flightCode;
         this.origin = origin;
         this.destination = destination;
-        this.seatType = seatType;
-        this.flightPrice = flightPrice;
         this.date = date;
         this.availableSeats = availableSeats;
         this.flightBookingList = new ArrayList<>();
         this.isDeleted = false;
+    }
+
+
+    public void setFlightCode(String origin, String destination, Integer num) {
+
+        this.flightCode = origin.substring(0,2) + destination.substring(0,3) + num;
     }
 
 

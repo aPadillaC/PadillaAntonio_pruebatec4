@@ -25,7 +25,7 @@ public class Client {
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
     private List<RoomBooking> roomBookingList;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "clientList", fetch = FetchType.LAZY)
     private List<FlightBooking> flightBookingList;
 
     public Client(Integer id, String name, String lastName, String nif, String email) {

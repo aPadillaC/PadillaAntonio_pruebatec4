@@ -43,11 +43,12 @@ public class HotelService implements IHotelService{
     @Override
     public void addHotel(Hotel hotel) {
 
-        List<Hotel> existingHotel = hotelRepository.findByNameAndCity(hotel.getName(), hotel.getCity());
+        //!TODO: hacer excepcion
+        List<Hotel> existingHotel = hotelRepository.findByNameAndCityAndNotDeleted(hotel.getName(), hotel.getCity()).get();
 
-        if(existingHotel == null) {
-            hotel.setHotelCode(hotel.getName(), hotel.getCity(), 1);
-        }
+//        if(existingHotel == null) {
+//            hotel.setHotelCode(hotel.getName(), hotel.getCity(), 1);
+//        }
 
         hotel.setHotelCode(hotel.getName(), hotel.getCity(), existingHotel.size() + 1);
 
@@ -81,6 +82,7 @@ public class HotelService implements IHotelService{
     }
 
 
+    //!TODO: Hacer excepcion
     @Override
     public void updateHotel(Integer hotelId, Hotel hotel) {
 
@@ -163,11 +165,14 @@ public class HotelService implements IHotelService{
                 .get();
 
         boolean bookingExists = room.getRoomBookingList().stream()
-                .anyMatch(roomBooking -> !roomBooking.isCompleted());
+                .anyMatch(roomBooking -> !roomBooking.isCompleted() && !roomBooking.isDeleted());
 
 
         //! TODO: Hacer Excepcion
-        //if(bookingExists) ;
+        if(bookingExists){
+
+            throw new RuntimeException("Flight cannot be deleted because it has bookings.");
+        }
 
         room.setDeleted(true);
 
@@ -313,13 +318,13 @@ public class HotelService implements IHotelService{
 
     private RoomDTO toRoomDTO(Room room){
 
-        return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(), room.getDateTo(), room.getRoomBookingList().stream().map(this::toRoomBookingDTO).collect(Collectors.toList()));
+        return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(), room.getDateTo(), room.getRoomBookingList().stream().map(this::toRoomBookingDTO).toList());
     }
 
 
     private HotelDTO toHotelDTO(Hotel hotel){
 
-        return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode(), hotel.getRooms().stream().map(this::toRoomDTO).collect(Collectors.toList()));
+        return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode(), hotel.getRooms().stream().map(this::toRoomDTO).toList());
     }
 
 

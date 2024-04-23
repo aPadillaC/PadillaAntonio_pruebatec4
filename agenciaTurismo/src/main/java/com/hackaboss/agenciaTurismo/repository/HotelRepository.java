@@ -13,6 +13,9 @@ import java.util.Optional;
 public interface HotelRepository extends JpaRepository<Hotel, Integer> {
     List<Hotel> findByNameAndCity(String name, String city);
 
+    @Query("SELECT h FROM Hotel h WHERE h.name = :name AND h.city = :city AND h.isDeleted = false")
+    Optional<List<Hotel>> findByNameAndCityAndNotDeleted(String name, String city);
+
     @Query("SELECT h FROM Hotel h WHERE h.id = :id AND h.isDeleted = false")
     Optional<Hotel> findByIdAndNotDeleted(Integer id);
 
