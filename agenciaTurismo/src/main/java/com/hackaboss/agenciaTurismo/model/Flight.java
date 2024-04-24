@@ -21,8 +21,6 @@ public class Flight {
     private String flightCode;
     private String origin;
     private String destination;
-//    private String seatType;
-//    private Double flightPrice;
     private LocalDate date;
     private Integer availableSeats;
     private boolean isDeleted;
@@ -48,21 +46,10 @@ public class Flight {
     }
 
 
-//    public void addClient(Client client) {
-//        this.clientList.add(client);
-//        this.availableSeats--;
-//    }
+    public void upDateAvailableSeats(FlightBooking flightBooking) {
 
-//    public void removeClient(Client client) {
-//        this.clientList.remove(client);
-//        this.availableSeats++;
-//    }
-
-
-//    public void addClient(List<Client> clientList) {
-//        this.clientList.addAll(clientList);
-//        this.availableSeats -= clientList.size();
-//    }
+        this.availableSeats -=  flightBooking.getClientList().size();
+    }
 
 
 }

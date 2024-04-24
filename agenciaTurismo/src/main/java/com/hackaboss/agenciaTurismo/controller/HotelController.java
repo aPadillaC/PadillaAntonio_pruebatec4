@@ -169,7 +169,33 @@ public class HotelController {
 
 
     // 15. Complete room-booking
-    //!TODO: Implement this method
+    @PutMapping("/rooms-booking/complete/{roomBookingId}")
+    public String completeRoomBooking(@PathVariable Integer roomBookingId){
+
+        hotelService.completeRoomBooking(roomBookingId);
+
+        return "Room booking completed";
+    }
+
+
+    // 16. Add hotelList
+    @PostMapping("/new-list")
+    public String addHotelList(@RequestBody List<Hotel> hotelList){
+
+        hotelService.addHotelList(hotelList);
+
+        return "Hotel list added";
+    }
+
+
+    // 17. Add roomList
+    @PostMapping("/{hotelId}/rooms/new-list")
+    public String addRoomList(@PathVariable Integer hotelId, @RequestBody List<Room> roomList){
+
+        hotelService.addRoomList(hotelId, roomList);
+
+        return "Room list added";
+    }
 
 
 

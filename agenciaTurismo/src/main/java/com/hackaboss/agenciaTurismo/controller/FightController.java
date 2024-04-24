@@ -10,6 +10,7 @@ import com.hackaboss.agenciaTurismo.service.IFlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -76,6 +77,17 @@ public class FightController {
 
 
 
+    //6. Get flight by destination, origin and date
+    @GetMapping("/search")
+    public List<FlightDTO> getFlightByDestinationOriginAndDate(@RequestParam("destination") String destination,
+                                                               @RequestParam("origin") String origin,
+                                                               @RequestParam("date") LocalDate date){
+
+        return flightService.getFlightByDestinationOriginAndDate(destination, origin, date);
+    }
+
+
+
     //7. Add flight-booking
     @PostMapping("/{flightId}/flight-booking/new")
     public String addFlightBooking(@PathVariable Integer flightId, @RequestBody FlightBookingDTO flightBookingDTO){
@@ -85,16 +97,45 @@ public class FightController {
         return "Flight-booking added, price: " + price + " €";
     }
 
-//    @GetMapping
-//    public void saveFlight(){
-//
-//        flightService.createFlightAndAddClients();
-//    }
 
-//    @GetMapping
-//    public String hello(){
-//
-//        flightService.deleteFlight();
-//        return "Hello World";
-//    }
+
+    //8. Get flight-booking by id
+    @GetMapping("/{flightId}/flight-booking")
+    public List<FlightBookingDTO> getFlightBookingForFlightById(@PathVariable Integer flightId){
+
+        return flightService.getFlightBookingForFlightById(flightId);
+    }
+
+
+
+    //9. Update flight-booking
+    @PutMapping("/flight-booking/edit/{flightBookingId}")
+    public String updateFlightBooking(@PathVariable Integer flightBookingId, @RequestBody FlightBookingDTO flightBookingDTO){
+
+        flightService.updateFlightBooking(flightBookingId, flightBookingDTO);
+
+        return "Flight-booking updated";
+    }
+
+
+
+    //9. Delete flight-booking
+    @DeleteMapping("/flight-booking/delete/{flightBookingId}")
+    public String deleteFlightBooking(@PathVariable Integer flightBookingId){
+
+        flightService.deleteFlightBooking(flightBookingId);
+
+        return "Flight-booking deleted";
+    }
+
+    //10. Add flightList
+    @PostMapping("/newList")
+    public String addFlightList(@RequestBody List<Flight> flightList){
+
+        flightService.addFlightList(flightList);
+
+        return "Flight list added";
+    }
+
+
 }

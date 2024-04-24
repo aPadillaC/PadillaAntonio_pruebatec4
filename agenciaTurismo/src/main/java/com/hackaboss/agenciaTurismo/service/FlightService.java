@@ -4,10 +4,7 @@ import com.hackaboss.agenciaTurismo.dto.ClientDTO;
 import com.hackaboss.agenciaTurismo.dto.FlightBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.FlightDTO;
 import com.hackaboss.agenciaTurismo.exception.FlightAlreadyExistsException;
-import com.hackaboss.agenciaTurismo.model.Flight;
-import com.hackaboss.agenciaTurismo.model.Client;
-import com.hackaboss.agenciaTurismo.model.FlightBooking;
-import com.hackaboss.agenciaTurismo.model.Hotel;
+import com.hackaboss.agenciaTurismo.model.*;
 import com.hackaboss.agenciaTurismo.repository.FlightBookingRepository;
 import com.hackaboss.agenciaTurismo.repository.FlightRepository;
 import com.hackaboss.agenciaTurismo.repository.ClientRepository;
@@ -37,7 +34,7 @@ public class FlightService implements IFlightService{
     public void addFlight(Flight flight) {
 
         //!TODO: hacer excepcion
-        List<Flight> existingFlight = flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(flight.getOrigin(), flight.getDestination(), flight.getDate()).get();
+        List<Flight> existingFlight = flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(flight.getOrigin(), flight.getDestination(), flight.getDate());
 
         if (!existingFlight.isEmpty()) {
 
@@ -63,7 +60,7 @@ public class FlightService implements IFlightService{
     @Override
     public FlightDTO getFlightById(Integer flightId) {
         //!TODO: hacer excepcion personalizada
-        return flightRepository.findByIdAndNotDeleted(flightId)
+        return flightRepository.findFlightByIdAndNotDeleted(flightId)
                 .map(this::toFlightDTO)
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
     }
@@ -74,7 +71,7 @@ public class FlightService implements IFlightService{
     @Override
     public void updateFlight(Integer flightId, Flight flight) {
 
-        Flight existingFlight = flightRepository.findByIdAndNotDeleted(flightId).get();
+        Flight existingFlight = flightRepository.findFlightByIdAndNotDeleted(flightId).get();
 
         if(flight.getOrigin() != null && !flight.getOrigin().isBlank()) existingFlight.setOrigin(flight.getOrigin());
         if(flight.getDestination() != null && !flight.getDestination().isBlank()) existingFlight.setDestination(flight.getDestination());
@@ -92,7 +89,7 @@ public class FlightService implements IFlightService{
     @Override
     public void deleteFlight(Integer flightId) {
 
-        Flight flight = flightRepository.findByIdAndNotDeleted(flightId).get();
+        Flight flight = flightRepository.findFlightByIdAndNotDeleted(flightId).get();
 
         boolean bookingExists = flight.getFlightBookingList().stream()
                 .anyMatch(booking -> !booking.isDeleted());
@@ -116,6 +113,8 @@ public class FlightService implements IFlightService{
 
         clientDTOList.forEach(clientDTO -> {
 
+            //Filtramos por dni y que no esté eliminado
+
             Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
 
             Client client = new Client();
@@ -136,39 +135,129 @@ public class FlightService implements IFlightService{
         });
 
         //!TODO: hacer excepcion
-        Flight flightExist = flightRepository.findByIdAndNotDeleted(flightId).get();
+
+        Flight flightExist = flightRepository.findFlightByIdAndNotDeleted(flightId).get();
 
         FlightBooking flightBooking = new FlightBooking();
 
-//        if (flightExist == null) {
-//
-//            throw new RuntimeException("Flight not found");
-//        }
-//        else{
+        if (flightExist.getAvailableSeats() == 0) {
 
-            if (flightExist.getAvailableSeats() == 0) {
+            throw new RuntimeException("No available seats");
+        }
 
-                throw new RuntimeException("No available seats");
+        flightBooking.setFlight(flightExist);
+        flightBooking.setBookingCode(flightExist.getFlightCode(), flightExist.getFlightBookingList().size() + 1);
+        flightBooking.setSeatType(flightBookingDTO.getSeatType());
+        flightBooking.setSeatPrice(flightBookingDTO.getSeatPrice());
+        flightBooking.setClientList(clientList);
+
+        List<FlightBooking> flightExistBookings = flightExist.getFlightBookingList().stream()
+                .filter(booking -> !booking.isDeleted())
+                .toList();
+
+        if(!flightExistBookings.isEmpty()) {
+
+            boolean bookingExists = isBookingExists(flightExistBookings, flightBooking);
+
+            if (bookingExists) {
+                throw new RuntimeException("Booking already exists");
             }
-
-
-            flightBooking.setFlight(flightExist);
-            flightBooking.setBookingCode(flightExist.getFlightCode(), flightExist.getFlightBookingList().size() + 1);
-            flightBooking.setSeatType(flightBookingDTO.getSeatType());
-            flightBooking.setSeatPrice(flightBookingDTO.getSeatPrice());
-            flightBooking.setClientList(clientList);
-//
-//        }
-
+        }
 
         flightBookingRepository.save(flightBooking);
 
         flightExist.getFlightBookingList().add(flightBooking);
+        flightExist.upDateAvailableSeats(flightBooking);
 
         flightRepository.save(flightExist);
 
         return flightBooking.getSeatPrice() * flightBooking.getClientList().size();
 
+    }
+
+
+    private boolean isBookingExists(List<FlightBooking> flightExistBooking, FlightBooking flightBooking) {
+
+        return flightExistBooking.stream()
+                .anyMatch(booking -> booking.getSeatType().equals(flightBooking.getSeatType()) &&
+                        booking.getSeatPrice().equals(flightBooking.getSeatPrice()) &&
+                        booking.getClientList().containsAll(flightBooking.getClientList()) &&
+                        booking.getFlight().equals(flightBooking.getFlight()));
+
+    }
+
+
+
+
+    @Override
+    public List<FlightBookingDTO> getFlightBookingForFlightById(Integer flightId) {
+        //!TODO: hacer excepcion
+        return flightRepository.findFlightByIdAndNotDeleted(flightId).stream()
+                .flatMap(flight -> flight.getFlightBookingList().stream()
+                        .filter(booking -> !booking.isDeleted())
+                        .map(this::toFlightBookingDTO))
+                .toList();
+
+    }
+
+
+    @Override
+    public void updateFlightBooking(Integer flightBookingId, FlightBookingDTO flightBookingDTO) {
+
+        //!TODO: hacer excepciones
+        FlightBooking flightBooking = flightBookingRepository.findById(flightBookingId).get();
+
+
+        if(flightBookingDTO.getSeatType() != null && !flightBookingDTO.getSeatType().isBlank()) flightBooking.setSeatType(flightBookingDTO.getSeatType());
+        if(flightBookingDTO.getSeatPrice() != null && flightBookingDTO.getSeatPrice() > 0) flightBooking.setSeatPrice(flightBookingDTO.getSeatPrice());
+
+        Flight flight = flightRepository.findFlightByIdAndNotDeleted(flightBooking.getFlight().getId()).get();
+
+        List<FlightBooking> flightExistBookings = flight.getFlightBookingList().stream()
+                .filter(booking -> !booking.isDeleted())
+                .toList();
+
+        boolean bookingExists = isBookingExists(flightExistBookings, flightBooking);
+
+        if (!bookingExists) {
+
+            throw new RuntimeException("Booking already exists");
+        }
+
+        flightBookingRepository.save(flightBooking);
+    }
+
+
+    @Override
+    public void deleteFlightBooking(Integer flightBookingId) {
+
+        //!TODO: hacer excepciones
+            FlightBooking flightBooking = flightBookingRepository.findById(flightBookingId).get();
+
+            flightBooking.setDeleted(true);
+
+            flightBookingRepository.save(flightBooking);
+    }
+
+
+
+    @Override
+    public List<FlightDTO> getFlightByDestinationOriginAndDate(String destination, String origin, LocalDate date) {
+
+        return flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(origin, destination, date).stream()
+                .map(this::toGetFlightDTO)
+                .toList();
+
+
+    }
+
+    @Override
+    public void addFlightList(List<Flight> flightList) {
+
+        flightList.forEach(flight -> flight.setFlightCode(flight.getOrigin(), flight.getDestination(),
+                flightList.indexOf(flight) + 1));
+
+        flightRepository.saveAll(flightList);
     }
 
 
@@ -178,9 +267,15 @@ public class FlightService implements IFlightService{
     }
 
 
+    private FlightDTO toGetFlightDTO(Flight flight) {
+
+        return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(), flight.getAvailableSeats());
+    }
+
+
     private FlightBookingDTO toFlightBookingDTO(FlightBooking flightBooking) {
 
-        return new FlightBookingDTO(flightBooking.getBookingCode(), flightBooking.getSeatType(), flightBooking.getSeatPrice(), flightBooking.getClientList().stream().map(this::toClientDTO).toList());
+        return new FlightBookingDTO(flightBooking.getBookingCode(), flightBooking.getFlight().getDate(), flightBooking.getFlight().getOrigin(), flightBooking.getFlight().getDestination(), flightBooking.getSeatType(), flightBooking.getSeatPrice(), flightBooking.getClientList().stream().map(this::toClientDTO).toList());
     }
 
 
@@ -189,62 +284,5 @@ public class FlightService implements IFlightService{
         return new ClientDTO(client.getName(), client.getLastName(), client.getNif(), client.getEmail());
     }
 
-    /**
-    public void createFlightAndAddClients() {
-        // Create a new flight
-        Flight flight = new Flight();
-        flight.setFlightCode("FL1");
-        flight.setOrigin("City1");
-        flight.setDestination("City2");
-        flight.setSeatType("Economy");
-        flight.setFlightPrice(100.0);
-        flight.setDate(LocalDate.now());
-        flight.setAvailableSeats(5);
-        flight.setClientList(new ArrayList<>());
 
-
-        // Save the flight
-        flight = flightRepository.save(flight);
-
-        //Create and add 5 clients to the flight
-        for (int i = 1; i <= 5; i++) {
-            Client client = new Client();
-
-            client.setName("Client" + i);
-            client.setLastName("LastName" + i);
-            client.setNif("NIF" + i);
-            client.setEmail("client" + i + "@example.com");
-
-
-             //Save the client
-            client = clientRepository.save(client);
-
-             //Add the client to the flight
-            flight.addClient(client);
-        }
-
-        // Update the flight
-        flightRepository.save(flight);
-    }
-
-    public void deleteFlight() {
-
-        Flight flight = flightRepository.findById(102).get();
-
-        List<Client> flightClients = flight.getClientList();
-        List<Client> clientsToRemove = new ArrayList<>();
-
-        for (Client client : flightClients) {
-            if (client.getId() % 2 == 0) {
-                clientsToRemove.add(client);
-            }
-        }
-
-        for (Client client : clientsToRemove) {
-            flight.removeClient(client);
-        }
-
-        flightRepository.save(flight);
-    }
-     */
 }

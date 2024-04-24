@@ -5,3 +5,4 @@ public class FlightAlreadyExistsException extends RuntimeException {
         super(message);
     }
 }
+

@@ -38,4 +38,10 @@ public interface IHotelService {
     void deleteRoomBooking(Integer roomBookingId);
 
     void updateRoomBooking(Integer roomBookingId, RoomBookingDTO roomBookingDTO);
+
+    void completeRoomBooking(Integer roomBookingId);
+
+    void addHotelList(List<Hotel> hotelList);
+
+    void addRoomList(Integer hotelId, List<Room> roomList);
 }
