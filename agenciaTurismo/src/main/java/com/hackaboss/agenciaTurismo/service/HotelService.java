@@ -40,16 +40,16 @@ public class HotelService implements IHotelService{
     @Autowired
     private RoomBookingRepository roomBookingRepository;
 
-    private final String entityHotel = "hotel";
-    private final String entityRoom = "room";
-    private final String entityRoomBooking = "room booking";
+    public static final String ENTITY_HOTEL = "hotel";
+    private static final String ENTITY_ROOM = "room";
+    public static final String ENTITY_ROOM_BOOKING = "room booking";
 
 
     @Override
     public void addHotel(Hotel hotel) {
 
         List<Hotel> existingHotel = hotelRepository.findByNameAndCityAndNotDeleted(hotel.getName(), hotel.getCity())
-                .orElseThrow( () -> new AlreadyExistEntityException(entityHotel));
+                .orElseThrow( () -> new AlreadyExistEntityException(ENTITY_HOTEL));
 
         hotel.setHotelCode(hotel.getName(), hotel.getCity(), existingHotel.size() + 1);
 
@@ -71,7 +71,7 @@ public class HotelService implements IHotelService{
     public void addRoom(Integer hotelId, Room room) {
 
         Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId)
-                .orElseThrow(() -> new EntityNotFoundException(entityHotel));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_HOTEL));
 
         room.setHotel(hotel);
         room.setRoomCode(hotel.getHotelCode(), hotel.getRooms().size() + 1);
@@ -90,7 +90,7 @@ public class HotelService implements IHotelService{
     public void updateHotel(Integer hotelId, Hotel hotel) {
 
         Hotel existingHotel = hotelRepository.findByIdAndNotDeleted(hotelId)
-                .orElseThrow(() -> new EntityNotFoundException(entityHotel) );
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_HOTEL) );
 
         if(hotel.getName() != null && !hotel.getName().isBlank())  existingHotel.setName(hotel.getName());
         if(hotel.getCity() != null && !hotel.getCity().isBlank())  existingHotel.setCity(hotel.getCity());
@@ -115,12 +115,12 @@ public class HotelService implements IHotelService{
     public void updateRoom(Integer hotelId, Integer roomId, Room room) {
 
             Hotel existingHotel = hotelRepository.findByIdAndNotDeleted(hotelId)
-                    .orElseThrow(() -> new EntityNotFoundException(entityHotel));
+                    .orElseThrow(() -> new EntityNotFoundException(ENTITY_HOTEL));
 
             Room existingRoom = existingHotel.getRooms().stream()
                     .filter(r -> r.getId().equals(roomId))
                     .findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException(entityRoom));
+                    .orElseThrow(() -> new EntityNotFoundException(ENTITY_ROOM));
 
             if(room.getRoomType() != null && !room.getRoomType().isBlank())  existingRoom.setRoomType(room.getRoomType());
             if(room.getRoomPrice() != null && room.getRoomPrice() > 0)  existingRoom.setRoomPrice(room.getRoomPrice());
@@ -133,7 +133,7 @@ public class HotelService implements IHotelService{
     public RoomDTO getRoomById(Integer hotelId, Integer roomId) {
 
          Room room = roomRepository.findByIdAndNotDeleted(roomId)
-                .orElseThrow( () -> new EntityNotFoundException(entityRoom) );
+                .orElseThrow( () -> new EntityNotFoundException(ENTITY_ROOM) );
 
          List<RoomBooking> filteredRoomBooking = room.getRoomBookingList().stream()
                 .filter(roomBooking -> !roomBooking.isDeleted())
@@ -149,7 +149,7 @@ public class HotelService implements IHotelService{
     public void deleteHotel(Integer hotelId) {
 
             Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId)
-                    .orElseThrow(() -> new EntityNotFoundException(entityHotel));
+                    .orElseThrow(() -> new EntityNotFoundException(ENTITY_HOTEL));
 
             boolean bookingExists = hotel.getRooms().stream()
                     .flatMap(room -> room.getRoomBookingList().stream())
@@ -168,12 +168,12 @@ public class HotelService implements IHotelService{
     public void deleteRoom(Integer hotelId, Integer roomId) {
 
         Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId)
-                .orElseThrow(() -> new EntityNotFoundException(entityHotel));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_HOTEL));
 
         Room room = hotel.getRooms().stream()
                 .filter(r -> r.getId().equals(roomId))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(entityRoom));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_ROOM));
 
         boolean bookingExists = room.getRoomBookingList().stream()
                 .anyMatch(roomBooking -> !roomBooking.isCompleted() && !roomBooking.isDeleted());
@@ -205,11 +205,11 @@ public class HotelService implements IHotelService{
     public Double addRoomBooking(Integer roomId, RoomBookingDTO roomBookingDTO) {
 
         Room room = roomRepository.findByIdAndNotDeleted(roomId)
-                .orElseThrow(() -> new EntityNotFoundException(entityRoom));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_ROOM));
 
         boolean bookingExist = isBookingExist(room, roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
 
-        if (bookingExist) throw new AlreadyExistEntityException(entityRoomBooking);
+        if (bookingExist) throw new AlreadyExistEntityException(ENTITY_ROOM_BOOKING);
 
         ClientDTO clientDTO = roomBookingDTO.getClient();
 
@@ -286,7 +286,7 @@ public class HotelService implements IHotelService{
     public void deleteRoomBooking(Integer roomBookingId) {
 
         RoomBooking roomBooking = roomBookingRepository.findById(roomBookingId)
-                .orElseThrow(() -> new EntityNotFoundException(entityRoomBooking));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_ROOM_BOOKING));
 
         roomBooking.setDeleted(true);
 
@@ -298,7 +298,7 @@ public class HotelService implements IHotelService{
     public void updateRoomBooking(Integer roomBookingId, RoomBookingDTO roomBookingDTO) {
 
         RoomBooking roomBooking = roomBookingRepository.findByIdAndNotDeleted(roomBookingId)
-                .orElseThrow(() -> new EntityNotFoundException(entityRoomBooking));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_ROOM_BOOKING));
 
         if(roomBookingDTO.getDateFrom() != null) roomBooking.setDateFrom(roomBookingDTO.getDateFrom());
         if(roomBookingDTO.getDateTo() != null) roomBooking.setDateTo(roomBookingDTO.getDateTo());
@@ -313,14 +313,14 @@ public class HotelService implements IHotelService{
             roomBooking.getRoom().setBooked(roomBookedEveryday);
         }
 
-        else throw new AlreadyExistEntityException(entityRoomBooking);
+        else throw new AlreadyExistEntityException(ENTITY_ROOM_BOOKING);
     }
 
     @Override
     public void completeRoomBooking(Integer roomBookingId) {
 
         RoomBooking roomBooking = roomBookingRepository.findByIdAndNotDeleted(roomBookingId)
-                .orElseThrow(() -> new EntityNotFoundException(entityRoomBooking));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_ROOM_BOOKING));
 
         roomBooking.setCompleted(true);
 
@@ -339,7 +339,7 @@ public class HotelService implements IHotelService{
     public void addRoomList(Integer hotelId, List<Room> roomList) {
 
             Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId)
-                    .orElseThrow(() -> new EntityNotFoundException(entityHotel));
+                    .orElseThrow(() -> new EntityNotFoundException(ENTITY_HOTEL));
 
             roomList.forEach(room -> room.setHotel(hotel));
 

@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class FlightService implements IFlightService{
@@ -41,7 +43,7 @@ public class FlightService implements IFlightService{
 
         }
 
-        flight.setFlightCode(flight.getOrigin(), flight.getDestination(), existingFlight.size() + 1);
+        flight.setFlightCode(flight.getOrigin(), flight.getDestination(),  1);
 
         flightRepository.save(flight);
     }
@@ -108,43 +110,18 @@ public class FlightService implements IFlightService{
     @Override
     public Double addFlightBooking(Integer flightId, FlightBookingDTO flightBookingDTO) {
 
-        List<ClientDTO> clientDTOList = flightBookingDTO.getClientList();
-
-        List<Client> clientList = new ArrayList<>();
-
-        clientDTOList.forEach(clientDTO -> {
-
-            //Filtramos por dni y que no esté eliminado
-
-            Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
-
-            Client client = new Client();
-
-            if(existingClient == null) {
-
-                client.setName(clientDTO.getName());
-                client.setLastName(clientDTO.getLastName());
-                client.setNif(clientDTO.getNif());
-                client.setEmail(clientDTO.getEmail());
-
-                clientRepository.save(client);
-
-                clientList.add(client);
-            }
-
-            else clientList.add(existingClient);
-        });
-
+        List<Client> clientList = getClientsOfBooking(flightBookingDTO);
 
         Flight flightExist = flightRepository.findFlightByIdAndNotDeleted(flightId)
                 .orElseThrow(FlightNotFoundException::new);
 
-        FlightBooking flightBooking = new FlightBooking();
 
         if (flightExist.getAvailableSeats() == 0) {
 
             throw new AllBookedException("No available seats");
         }
+
+        FlightBooking flightBooking = new FlightBooking();
 
         flightBooking.setFlight(flightExist);
         flightBooking.setBookingCode(flightExist.getFlightCode(), flightExist.getFlightBookingList().size() + 1);
@@ -177,13 +154,50 @@ public class FlightService implements IFlightService{
     }
 
 
+
+    private List<Client> getClientsOfBooking(FlightBookingDTO flightBookingDTO) {
+
+        List<Client> clientList = new ArrayList<>();
+
+        List<ClientDTO> clientDTOList = flightBookingDTO.getClientList();
+
+        clientDTOList.forEach(clientDTO -> {
+
+            //Filter by dni and that is not deleted
+
+            Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
+
+            Client client = new Client();
+
+            if(existingClient == null) {
+
+                client.setName(clientDTO.getName());
+                client.setLastName(clientDTO.getLastName());
+                client.setNif(clientDTO.getNif());
+                client.setEmail(clientDTO.getEmail());
+
+                clientRepository.save(client);
+
+                clientList.add(client);
+            }
+
+            else clientList.add(existingClient);
+        });
+        return clientList;
+    }
+
+
     private boolean isBookingExists(List<FlightBooking> flightExistBooking, FlightBooking flightBooking) {
+
+        Set<Client> flightBookingClientList = new HashSet<>(flightBooking.getClientList());
 
         return flightExistBooking.stream()
                 .anyMatch(booking -> booking.getSeatType().equals(flightBooking.getSeatType()) &&
                         booking.getSeatPrice().equals(flightBooking.getSeatPrice()) &&
-                        booking.getClientList().containsAll(flightBooking.getClientList()) &&
+                        booking.getClientList().size() == flightBookingClientList.size() &&
+                        new HashSet<>(booking.getClientList()).containsAll(flightBookingClientList) &&
                         booking.getFlight().equals(flightBooking.getFlight()));
+
 
     }
 
