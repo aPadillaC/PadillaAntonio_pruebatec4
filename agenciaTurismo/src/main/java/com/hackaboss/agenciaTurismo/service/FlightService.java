@@ -3,7 +3,7 @@ package com.hackaboss.agenciaTurismo.service;
 import com.hackaboss.agenciaTurismo.dto.ClientDTO;
 import com.hackaboss.agenciaTurismo.dto.FlightBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.FlightDTO;
-import com.hackaboss.agenciaTurismo.exception.FlightAlreadyExistsException;
+import com.hackaboss.agenciaTurismo.exception.*;
 import com.hackaboss.agenciaTurismo.model.*;
 import com.hackaboss.agenciaTurismo.repository.FlightBookingRepository;
 import com.hackaboss.agenciaTurismo.repository.FlightRepository;
@@ -33,7 +33,6 @@ public class FlightService implements IFlightService{
     @Override
     public void addFlight(Flight flight) {
 
-        //!TODO: hacer excepcion
         List<Flight> existingFlight = flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(flight.getOrigin(), flight.getDestination(), flight.getDate());
 
         if (!existingFlight.isEmpty()) {
@@ -59,19 +58,19 @@ public class FlightService implements IFlightService{
 
     @Override
     public FlightDTO getFlightById(Integer flightId) {
-        //!TODO: hacer excepcion personalizada
+
         return flightRepository.findFlightByIdAndNotDeleted(flightId)
                 .map(this::toFlightDTO)
-                .orElseThrow(() -> new RuntimeException("Flight not found"));
+                .orElseThrow(FlightNotFoundException::new);
     }
 
 
 
-    //!TODO: hacer excepcion
     @Override
     public void updateFlight(Integer flightId, Flight flight) {
 
-        Flight existingFlight = flightRepository.findFlightByIdAndNotDeleted(flightId).get();
+        Flight existingFlight = flightRepository.findFlightByIdAndNotDeleted(flightId)
+                .orElseThrow(FlightNotFoundException::new);
 
         if(flight.getOrigin() != null && !flight.getOrigin().isBlank()) existingFlight.setOrigin(flight.getOrigin());
         if(flight.getDestination() != null && !flight.getDestination().isBlank()) existingFlight.setDestination(flight.getDestination());
@@ -89,20 +88,22 @@ public class FlightService implements IFlightService{
     @Override
     public void deleteFlight(Integer flightId) {
 
-        Flight flight = flightRepository.findFlightByIdAndNotDeleted(flightId).get();
+        Flight flight = flightRepository.findFlightByIdAndNotDeleted(flightId)
+                .orElseThrow(FlightNotFoundException::new);
 
         boolean bookingExists = flight.getFlightBookingList().stream()
                 .anyMatch(booking -> !booking.isDeleted());
 
-        //! TODO: Hacer Excepcion
         if (bookingExists) {
-            throw new RuntimeException("Flight cannot be deleted because it has bookings.");
+            throw new CannotBeDeletedBecauseItHasBookingsException("Flight cannot be deleted because it has bookings.");
         }
 
         flight.setDeleted(true);
 
         flightRepository.save(flight);
     }
+
+
 
     @Override
     public Double addFlightBooking(Integer flightId, FlightBookingDTO flightBookingDTO) {
@@ -134,15 +135,15 @@ public class FlightService implements IFlightService{
             else clientList.add(existingClient);
         });
 
-        //!TODO: hacer excepcion
 
-        Flight flightExist = flightRepository.findFlightByIdAndNotDeleted(flightId).get();
+        Flight flightExist = flightRepository.findFlightByIdAndNotDeleted(flightId)
+                .orElseThrow(FlightNotFoundException::new);
 
         FlightBooking flightBooking = new FlightBooking();
 
         if (flightExist.getAvailableSeats() == 0) {
 
-            throw new RuntimeException("No available seats");
+            throw new AllBookedException("No available seats");
         }
 
         flightBooking.setFlight(flightExist);
@@ -160,7 +161,7 @@ public class FlightService implements IFlightService{
             boolean bookingExists = isBookingExists(flightExistBookings, flightBooking);
 
             if (bookingExists) {
-                throw new RuntimeException("Booking already exists");
+                throw new BookingAlreadyExistsException("Booking already exists");
             }
         }
 
@@ -191,7 +192,7 @@ public class FlightService implements IFlightService{
 
     @Override
     public List<FlightBookingDTO> getFlightBookingForFlightById(Integer flightId) {
-        //!TODO: hacer excepcion
+
         return flightRepository.findFlightByIdAndNotDeleted(flightId).stream()
                 .flatMap(flight -> flight.getFlightBookingList().stream()
                         .filter(booking -> !booking.isDeleted())
@@ -204,14 +205,14 @@ public class FlightService implements IFlightService{
     @Override
     public void updateFlightBooking(Integer flightBookingId, FlightBookingDTO flightBookingDTO) {
 
-        //!TODO: hacer excepciones
-        FlightBooking flightBooking = flightBookingRepository.findById(flightBookingId).get();
-
+        FlightBooking flightBooking = flightBookingRepository.findById(flightBookingId)
+                .orElseThrow( () -> new BookingNotFoundException("Flight booking not found"));
 
         if(flightBookingDTO.getSeatType() != null && !flightBookingDTO.getSeatType().isBlank()) flightBooking.setSeatType(flightBookingDTO.getSeatType());
         if(flightBookingDTO.getSeatPrice() != null && flightBookingDTO.getSeatPrice() > 0) flightBooking.setSeatPrice(flightBookingDTO.getSeatPrice());
 
-        Flight flight = flightRepository.findFlightByIdAndNotDeleted(flightBooking.getFlight().getId()).get();
+        Flight flight = flightRepository.findFlightByIdAndNotDeleted(flightBooking.getFlight().getId())
+                .orElseThrow(FlightNotFoundException::new);
 
         List<FlightBooking> flightExistBookings = flight.getFlightBookingList().stream()
                 .filter(booking -> !booking.isDeleted())
@@ -221,7 +222,7 @@ public class FlightService implements IFlightService{
 
         if (!bookingExists) {
 
-            throw new RuntimeException("Booking already exists");
+            throw new BookingAlreadyExistsException("Booking already exists");
         }
 
         flightBookingRepository.save(flightBooking);
@@ -231,8 +232,8 @@ public class FlightService implements IFlightService{
     @Override
     public void deleteFlightBooking(Integer flightBookingId) {
 
-        //!TODO: hacer excepciones
-            FlightBooking flightBooking = flightBookingRepository.findById(flightBookingId).get();
+            FlightBooking flightBooking = flightBookingRepository.findById(flightBookingId)
+                    .orElseThrow( () -> new BookingNotFoundException("Flight booking not found"));
 
             flightBooking.setDeleted(true);
 
@@ -263,19 +264,23 @@ public class FlightService implements IFlightService{
 
     private FlightDTO toFlightDTO(Flight flight) {
 
-        return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(), flight.getAvailableSeats(), flight.getFlightBookingList().stream().map(this::toFlightBookingDTO).toList());
+        return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
+                flight.getAvailableSeats(), flight.getFlightBookingList().stream().map(this::toFlightBookingDTO).toList());
     }
 
 
     private FlightDTO toGetFlightDTO(Flight flight) {
 
-        return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(), flight.getAvailableSeats());
+        return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
+                flight.getAvailableSeats());
     }
 
 
     private FlightBookingDTO toFlightBookingDTO(FlightBooking flightBooking) {
 
-        return new FlightBookingDTO(flightBooking.getBookingCode(), flightBooking.getFlight().getDate(), flightBooking.getFlight().getOrigin(), flightBooking.getFlight().getDestination(), flightBooking.getSeatType(), flightBooking.getSeatPrice(), flightBooking.getClientList().stream().map(this::toClientDTO).toList());
+        return new FlightBookingDTO(flightBooking.getBookingCode(), flightBooking.getFlight().getDate(),
+                flightBooking.getFlight().getOrigin(), flightBooking.getFlight().getDestination(), flightBooking.getSeatType(),
+                flightBooking.getSeatPrice(), flightBooking.getClientList().stream().map(this::toClientDTO).toList());
     }
 
 

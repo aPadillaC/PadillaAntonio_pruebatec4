@@ -1,6 +1,9 @@
 package com.hackaboss.agenciaTurismo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,8 +20,15 @@ public class FlightBooking {
     private Integer id;
 
     private String bookingCode;
+
+    @Size(min = 3, max = 40,
+            message = "Origin must be 3 characters long")
     private String seatType;
+
+    @NotNull(message = "Seat price must be informed")
+    @Min(value = 0, message = "Seat price must be greater than 0")
     private Double seatPrice;
+
     private boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,7 +52,7 @@ public class FlightBooking {
 
     public void setBookingCode(String flightCode, Integer num) {
 
-        this.bookingCode = flightCode + "/bF" + num;
+        this.bookingCode = flightCode + "/BF" + num;
     }
 
 }

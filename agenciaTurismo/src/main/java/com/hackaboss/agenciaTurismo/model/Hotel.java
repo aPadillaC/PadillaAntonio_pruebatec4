@@ -1,6 +1,7 @@
 package com.hackaboss.agenciaTurismo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,9 +19,16 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
+    @Size(min = 3, max = 40,
+            message = "Origin must be 3 characters long")
     private String name;
+
+    @Size(min = 3, max = 40,
+            message = "Origin must be 3 characters long")
     private String city;
+
     private boolean isDeleted;
+
     private String hotelCode;
 
     @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY)
@@ -37,6 +45,6 @@ public class Hotel {
 
     public void setHotelCode(String name, String city, Integer num) {
 
-        this.hotelCode = name.substring(0,2) + city.substring(0,3) + num;
+        this.hotelCode = name.toUpperCase().substring(0,2) + city.toUpperCase().substring(0,3) + num;
     }
 }

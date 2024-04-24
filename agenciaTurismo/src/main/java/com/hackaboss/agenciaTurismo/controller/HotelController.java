@@ -5,12 +5,15 @@ import com.hackaboss.agenciaTurismo.dto.RoomBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.RoomDTO;
 import com.hackaboss.agenciaTurismo.model.Hotel;
 import com.hackaboss.agenciaTurismo.model.Room;
-import com.hackaboss.agenciaTurismo.model.RoomBooking;
 import com.hackaboss.agenciaTurismo.service.IClientService;
 import com.hackaboss.agenciaTurismo.service.IHotelService;
 import com.hackaboss.agenciaTurismo.service.IRoomBookingService;
 import com.hackaboss.agenciaTurismo.service.IRoomService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -36,7 +39,7 @@ public class HotelController {
 
     // 1. Add hotel
     @PostMapping("/new")
-    public String addHotel(@RequestBody Hotel hotel){
+    public String addHotel(@Valid @RequestBody Hotel hotel){
 
         hotelService.addHotel(hotel);
 
@@ -54,7 +57,7 @@ public class HotelController {
 
     // 3. Find hotel by id
     @GetMapping("/{hotelId}")
-    public HotelDTO getHotelById(@PathVariable Integer hotelId){
+    public HotelDTO getHotelById(@Positive @NotNull @PathVariable Integer hotelId){
 
         return hotelService.getHotelById(hotelId);
     }
@@ -62,7 +65,7 @@ public class HotelController {
 
     // 4. Add room
     @PostMapping("/{hotelId}/rooms/new")
-    public String addRoom(@PathVariable Integer hotelId, @RequestBody Room room){
+    public String addRoom(@Positive @NotNull @PathVariable Integer hotelId, @Valid @RequestBody Room room){
 
         hotelService.addRoom(hotelId, room);
 
@@ -72,7 +75,7 @@ public class HotelController {
 
     // 5. Update hotel
     @PutMapping("/edit/{hotelId}")
-    public String updateHotel(@PathVariable Integer hotelId, @RequestBody Hotel hotel){
+    public String updateHotel(@Positive @NotNull @PathVariable Integer hotelId, @Valid @RequestBody Hotel hotel){
 
         hotelService.updateHotel(hotelId, hotel);
 
@@ -82,7 +85,9 @@ public class HotelController {
 
     // 6. Update room
     @PutMapping("/{hotelId}/rooms/edit/{roomId}")
-    public String updateRoom(@PathVariable Integer hotelId, @PathVariable Integer roomId, @RequestBody Room room){
+    public String updateRoom(@Positive @NotNull @PathVariable Integer hotelId,
+                             @Positive @PathVariable Integer roomId,
+                             @Valid @RequestBody Room room){
 
         hotelService.updateRoom(hotelId, roomId, room);
 
@@ -92,7 +97,8 @@ public class HotelController {
 
     // 7. Get rooms by hotel id
     @GetMapping("/{hotelId}/rooms/{roomId}")
-    public RoomDTO getRoomById(@PathVariable Integer hotelId, @PathVariable Integer roomId){
+    public RoomDTO getRoomById(@Positive @NotNull @PathVariable Integer hotelId,
+                               @Positive @NotNull @PathVariable Integer roomId){
 
         return hotelService.getRoomById(hotelId, roomId);
     }
@@ -100,7 +106,7 @@ public class HotelController {
 
     // 8. Delete hotel
     @DeleteMapping("/delete/{hotelId}")
-    public String deleteHotel(@PathVariable Integer hotelId){
+    public String deleteHotel(@Positive @NotNull @PathVariable Integer hotelId){
 
         hotelService.deleteHotel(hotelId);
         return "Hotel deleted";
@@ -109,7 +115,8 @@ public class HotelController {
 
     // 9. Delete room
     @DeleteMapping("/{hotelId}/rooms/delete/{roomId}")
-    public String deleteRoom(@PathVariable Integer hotelId, @PathVariable Integer roomId){
+    public String deleteRoom(@Positive @NotNull @PathVariable Integer hotelId,
+                             @Positive @NotNull @PathVariable Integer roomId){
 
         hotelService.deleteRoom(hotelId, roomId);
         return "Room deleted";
@@ -119,8 +126,14 @@ public class HotelController {
     // 10. Find rooms by conditions
     @GetMapping("/rooms")
     public List<RoomDTO> getRoomsByCityAndDate(@RequestParam("city") String city,
-                                               @RequestParam("dateTo") LocalDate dateTo,
-                                               @RequestParam("dateFrom") LocalDate dateFrom) {
+                                               @DateTimeFormat(
+                                                       iso = DateTimeFormat.ISO.DATE,
+                                                       fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+                                                    @RequestParam("dateTo") LocalDate dateTo,
+                                               @DateTimeFormat(
+                                                       iso = DateTimeFormat.ISO.DATE,
+                                                       fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+                                                   @RequestParam("dateFrom") LocalDate dateFrom) {
 
         return hotelService.findByCityAndDate(city, dateTo, dateFrom);
     }
@@ -129,8 +142,8 @@ public class HotelController {
 
     // 11. Add room-booking
     @PostMapping("/{roomId}/rooms-booking/new")
-    public String addRoomBooking(@PathVariable Integer roomId,
-                                @RequestBody RoomBookingDTO roomBookingDTO){
+    public String addRoomBooking(@Positive @NotNull @PathVariable Integer roomId,
+                                 @Valid @RequestBody RoomBookingDTO roomBookingDTO){
 
         Double price = hotelService.addRoomBooking(roomId, roomBookingDTO);
 
@@ -149,7 +162,7 @@ public class HotelController {
 
     // 13. Delete room-booking
     @DeleteMapping("/rooms-booking/delete/{roomBookingId}")
-    public String deleteRoomBooking(@PathVariable Integer roomBookingId){
+    public String deleteRoomBooking(@Positive @NotNull @PathVariable Integer roomBookingId){
 
         hotelService.deleteRoomBooking(roomBookingId);
 
@@ -160,7 +173,8 @@ public class HotelController {
 
     // 14. Update room-booking
     @PutMapping("/rooms-booking/edit/{roomBookingId}")
-    public String updateRoomBooking(@PathVariable Integer roomBookingId, @RequestBody RoomBookingDTO roomBookingDTO){
+    public String updateRoomBooking(@Positive @NotNull @PathVariable Integer roomBookingId,
+                                    @Valid @RequestBody RoomBookingDTO roomBookingDTO){
 
         hotelService.updateRoomBooking(roomBookingId, roomBookingDTO);
 
@@ -170,7 +184,7 @@ public class HotelController {
 
     // 15. Complete room-booking
     @PutMapping("/rooms-booking/complete/{roomBookingId}")
-    public String completeRoomBooking(@PathVariable Integer roomBookingId){
+    public String completeRoomBooking(@Positive @NotNull @PathVariable Integer roomBookingId){
 
         hotelService.completeRoomBooking(roomBookingId);
 
@@ -180,7 +194,7 @@ public class HotelController {
 
     // 16. Add hotelList
     @PostMapping("/new-list")
-    public String addHotelList(@RequestBody List<Hotel> hotelList){
+    public String addHotelList(@Valid @RequestBody List<Hotel> hotelList){
 
         hotelService.addHotelList(hotelList);
 
@@ -190,13 +204,11 @@ public class HotelController {
 
     // 17. Add roomList
     @PostMapping("/{hotelId}/rooms/new-list")
-    public String addRoomList(@PathVariable Integer hotelId, @RequestBody List<Room> roomList){
+    public String addRoomList(@Positive @NotNull @PathVariable Integer hotelId,
+                              @Valid @RequestBody List<Room> roomList){
 
         hotelService.addRoomList(hotelId, roomList);
 
         return "Room list added";
     }
-
-
-
 }

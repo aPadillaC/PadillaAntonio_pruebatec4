@@ -4,6 +4,9 @@ import com.hackaboss.agenciaTurismo.dto.ClientDTO;
 import com.hackaboss.agenciaTurismo.dto.HotelDTO;
 import com.hackaboss.agenciaTurismo.dto.RoomBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.RoomDTO;
+import com.hackaboss.agenciaTurismo.exception.AlreadyExistEntityException;
+import com.hackaboss.agenciaTurismo.exception.CannotBeDeletedBecauseItHasBookingsException;
+import com.hackaboss.agenciaTurismo.exception.EntityNotFoundException;
 import com.hackaboss.agenciaTurismo.model.Client;
 import com.hackaboss.agenciaTurismo.model.Hotel;
 import com.hackaboss.agenciaTurismo.model.Room;
@@ -18,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -38,16 +40,16 @@ public class HotelService implements IHotelService{
     @Autowired
     private RoomBookingRepository roomBookingRepository;
 
+    private final String entityHotel = "hotel";
+    private final String entityRoom = "room";
+    private final String entityRoomBooking = "room booking";
+
 
     @Override
     public void addHotel(Hotel hotel) {
 
-        //!TODO: hacer excepcion
-        List<Hotel> existingHotel = hotelRepository.findByNameAndCityAndNotDeleted(hotel.getName(), hotel.getCity()).get();
-
-//        if(existingHotel == null) {
-//            hotel.setHotelCode(hotel.getName(), hotel.getCity(), 1);
-//        }
+        List<Hotel> existingHotel = hotelRepository.findByNameAndCityAndNotDeleted(hotel.getName(), hotel.getCity())
+                .orElseThrow( () -> new AlreadyExistEntityException(entityHotel));
 
         hotel.setHotelCode(hotel.getName(), hotel.getCity(), existingHotel.size() + 1);
 
@@ -60,14 +62,16 @@ public class HotelService implements IHotelService{
 
         return hotelRepository.findAllNotDeleted().stream()
                 .map(this::toGetHotelDTO)
-                .collect(Collectors.toList());
+                .toList();
 
     }
+
 
     @Override
     public void addRoom(Integer hotelId, Room room) {
 
-        Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId).get();
+        Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId)
+                .orElseThrow(() -> new EntityNotFoundException(entityHotel));
 
         room.setHotel(hotel);
         room.setRoomCode(hotel.getHotelCode(), hotel.getRooms().size() + 1);
@@ -81,11 +85,12 @@ public class HotelService implements IHotelService{
     }
 
 
-    //!TODO: Hacer excepcion
+
     @Override
     public void updateHotel(Integer hotelId, Hotel hotel) {
 
-        Hotel existingHotel = hotelRepository.findByIdAndNotDeleted(hotelId).get();
+        Hotel existingHotel = hotelRepository.findByIdAndNotDeleted(hotelId)
+                .orElseThrow(() -> new EntityNotFoundException(entityHotel) );
 
         if(hotel.getName() != null && !hotel.getName().isBlank())  existingHotel.setName(hotel.getName());
         if(hotel.getCity() != null && !hotel.getCity().isBlank())  existingHotel.setCity(hotel.getCity());
@@ -96,25 +101,29 @@ public class HotelService implements IHotelService{
         hotelRepository.save(existingHotel);
     }
 
+
+
     public void updateRoomCode(Hotel hotel){
 
         IntStream.range(0, hotel.getRooms().size())
                 .forEach(i -> hotel.getRooms().get(i).setRoomCode(hotel.getHotelCode(), i + 1));
     }
 
+
+
     @Override
     public void updateRoom(Integer hotelId, Integer roomId, Room room) {
 
-            Hotel existingHotel = hotelRepository.findByIdAndNotDeleted(hotelId).get();
+            Hotel existingHotel = hotelRepository.findByIdAndNotDeleted(hotelId)
+                    .orElseThrow(() -> new EntityNotFoundException(entityHotel));
 
             Room existingRoom = existingHotel.getRooms().stream()
                     .filter(r -> r.getId().equals(roomId))
                     .findFirst()
-                    .get();
+                    .orElseThrow(() -> new EntityNotFoundException(entityRoom));
 
             if(room.getRoomType() != null && !room.getRoomType().isBlank())  existingRoom.setRoomType(room.getRoomType());
             if(room.getRoomPrice() != null && room.getRoomPrice() > 0)  existingRoom.setRoomPrice(room.getRoomPrice());
-
 
             roomRepository.save(existingRoom);
     }
@@ -123,10 +132,8 @@ public class HotelService implements IHotelService{
     @Override
     public RoomDTO getRoomById(Integer hotelId, Integer roomId) {
 
-        //!Todo: Hacer excepcion
-
          Room room = roomRepository.findByIdAndNotDeleted(roomId)
-                .orElseThrow( () -> new RuntimeException("Room not found") );
+                .orElseThrow( () -> new EntityNotFoundException(entityRoom) );
 
          List<RoomBooking> filteredRoomBooking = room.getRoomBookingList().stream()
                 .filter(roomBooking -> !roomBooking.isDeleted())
@@ -141,14 +148,14 @@ public class HotelService implements IHotelService{
     @Override
     public void deleteHotel(Integer hotelId) {
 
-            Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId).get();
+            Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId)
+                    .orElseThrow(() -> new EntityNotFoundException(entityHotel));
 
             boolean bookingExists = hotel.getRooms().stream()
                     .flatMap(room -> room.getRoomBookingList().stream())
                     .anyMatch(roomBooking -> !roomBooking.isCompleted());
 
-            //! TODO: Hacer Excepcion
-            //if(bookingExists) ;
+            if(bookingExists) throw new CannotBeDeletedBecauseItHasBookingsException("Hotel cannot be deleted because it has bookings.");
 
             hotel.setDeleted(true);
             hotel.getRooms().forEach(room -> room.setDeleted(true));
@@ -160,28 +167,26 @@ public class HotelService implements IHotelService{
     @Override
     public void deleteRoom(Integer hotelId, Integer roomId) {
 
-        Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId).get();
+        Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId)
+                .orElseThrow(() -> new EntityNotFoundException(entityHotel));
 
         Room room = hotel.getRooms().stream()
                 .filter(r -> r.getId().equals(roomId))
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new EntityNotFoundException(entityRoom));
 
         boolean bookingExists = room.getRoomBookingList().stream()
                 .anyMatch(roomBooking -> !roomBooking.isCompleted() && !roomBooking.isDeleted());
 
 
-        //! TODO: Hacer Excepcion
         if(bookingExists){
 
-            throw new RuntimeException("Flight cannot be deleted because it has bookings.");
+            throw new CannotBeDeletedBecauseItHasBookingsException("Room cannot be deleted because it has bookings.");
         }
 
         room.setDeleted(true);
 
         roomRepository.save(room);
-
-
     }
 
 
@@ -191,7 +196,7 @@ public class HotelService implements IHotelService{
 
         return roomRepository.findByCityAndDate(city, dateTo, dateFrom).stream()
                 .map(this::toGetRoomDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -199,14 +204,12 @@ public class HotelService implements IHotelService{
     @Override
     public Double addRoomBooking(Integer roomId, RoomBookingDTO roomBookingDTO) {
 
-        Room room = roomRepository.findByIdAndNotDeleted(roomId).get();
+        Room room = roomRepository.findByIdAndNotDeleted(roomId)
+                .orElseThrow(() -> new EntityNotFoundException(entityRoom));
 
         boolean bookingExist = isBookingExist(room, roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
 
-        //!TODO: Hacer Excepcion
-        if (bookingExist) {
-            return 0.0;
-        }
+        if (bookingExist) throw new AlreadyExistEntityException(entityRoomBooking);
 
         ClientDTO clientDTO = roomBookingDTO.getClient();
 
@@ -274,7 +277,7 @@ public class HotelService implements IHotelService{
 
         return roomBookingRepository.findIncompleteAndNotDeletedBookings().stream()
                 .map(this::toRoomBookingDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -282,7 +285,8 @@ public class HotelService implements IHotelService{
     @Override
     public void deleteRoomBooking(Integer roomBookingId) {
 
-        RoomBooking roomBooking = roomBookingRepository.findById(roomBookingId).get();
+        RoomBooking roomBooking = roomBookingRepository.findById(roomBookingId)
+                .orElseThrow(() -> new EntityNotFoundException(entityRoomBooking));
 
         roomBooking.setDeleted(true);
 
@@ -293,7 +297,8 @@ public class HotelService implements IHotelService{
     @Override
     public void updateRoomBooking(Integer roomBookingId, RoomBookingDTO roomBookingDTO) {
 
-        RoomBooking roomBooking = roomBookingRepository.findByIdAndNotDeleted(roomBookingId).get();
+        RoomBooking roomBooking = roomBookingRepository.findByIdAndNotDeleted(roomBookingId)
+                .orElseThrow(() -> new EntityNotFoundException(entityRoomBooking));
 
         if(roomBookingDTO.getDateFrom() != null) roomBooking.setDateFrom(roomBookingDTO.getDateFrom());
         if(roomBookingDTO.getDateTo() != null) roomBooking.setDateTo(roomBookingDTO.getDateTo());
@@ -308,14 +313,14 @@ public class HotelService implements IHotelService{
             roomBooking.getRoom().setBooked(roomBookedEveryday);
         }
 
-        //!TODO: Hacer Excepcion para caso de que ya exista una reserva en esas fechas
+        else throw new AlreadyExistEntityException(entityRoomBooking);
     }
 
     @Override
     public void completeRoomBooking(Integer roomBookingId) {
 
-        //!TODO: Hacer excepcion
-        RoomBooking roomBooking = roomBookingRepository.findByIdAndNotDeleted(roomBookingId).get();
+        RoomBooking roomBooking = roomBookingRepository.findByIdAndNotDeleted(roomBookingId)
+                .orElseThrow(() -> new EntityNotFoundException(entityRoomBooking));
 
         roomBooking.setCompleted(true);
 
@@ -333,7 +338,8 @@ public class HotelService implements IHotelService{
     @Override
     public void addRoomList(Integer hotelId, List<Room> roomList) {
 
-            Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId).get();
+            Hotel hotel = hotelRepository.findByIdAndNotDeleted(hotelId)
+                    .orElseThrow(() -> new EntityNotFoundException(entityHotel));
 
             roomList.forEach(room -> room.setHotel(hotel));
 
@@ -371,7 +377,8 @@ public class HotelService implements IHotelService{
 
     private HotelDTO toHotelDTO(Hotel hotel){
 
-        return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode(), hotel.getRooms().stream().map(this::toRoomDTO).toList());
+        return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode(),
+                hotel.getRooms().stream().map(this::toRoomDTO).toList());
     }
 
 

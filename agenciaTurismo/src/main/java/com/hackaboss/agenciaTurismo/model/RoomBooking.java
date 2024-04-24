@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -18,9 +19,19 @@ public class RoomBooking {
     private Integer id;
 
     private String bookingCode;
+
+    @DateTimeFormat(
+            iso = DateTimeFormat.ISO.DATE,
+            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
     private LocalDate dateFrom;
+
+    @DateTimeFormat(
+            iso = DateTimeFormat.ISO.DATE,
+            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
     private LocalDate dateTo;
+
     private boolean isCompleted;
+
     private boolean isDeleted;
 
 
@@ -44,7 +55,7 @@ public class RoomBooking {
     }
 
     public void setBookingCode(String roomCode, Integer num) {
-        this.bookingCode = roomCode + "/bR" + num;
+        this.bookingCode = roomCode + "/BR" + num;
     }
 
 }

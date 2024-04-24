@@ -1,6 +1,7 @@
 package com.hackaboss.agenciaTurismo.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +16,20 @@ import java.util.List;
 public class HotelDTO {
 
     private Integer id;
+
+    @Size(min = 3, max = 40,
+            message = "Origin must be 3 characters long")
     private String name;
+
+    @Size(min = 3, max = 40,
+            message = "Origin must be 3 characters long")
     private String city;
+
     private String hotelCode;
+
     private List<RoomDTO> rooms;
 
+    // Get one hotel
     public HotelDTO(Integer id, String name, String city, String hotelCode) {
         this.id = id;
         this.name = name;
