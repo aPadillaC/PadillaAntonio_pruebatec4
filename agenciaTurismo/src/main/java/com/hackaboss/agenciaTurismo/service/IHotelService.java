@@ -28,7 +28,7 @@ public interface IHotelService {
 
     void deleteRoom(Integer hotelId, Integer roomId);
 
-    List<RoomDTO> findByCityAndDate(String city, LocalDate dateTo, LocalDate dateFrom);
+    List<RoomDTO> findByCityAndDate(String city, LocalDate dateFrom, LocalDate dateTo);
 
     Double addRoomBooking(Integer roomId, RoomBookingDTO roomBookingDTO);
 

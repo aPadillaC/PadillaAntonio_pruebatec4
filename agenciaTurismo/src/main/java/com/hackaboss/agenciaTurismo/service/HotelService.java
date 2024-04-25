@@ -8,10 +8,7 @@ import com.hackaboss.agenciaTurismo.exception.AlreadyExistEntityException;
 import com.hackaboss.agenciaTurismo.exception.HasBookingsException;
 import com.hackaboss.agenciaTurismo.exception.EntityNotFoundException;
 import com.hackaboss.agenciaTurismo.exception.ParameterConflictException;
-import com.hackaboss.agenciaTurismo.model.Client;
-import com.hackaboss.agenciaTurismo.model.Hotel;
-import com.hackaboss.agenciaTurismo.model.Room;
-import com.hackaboss.agenciaTurismo.model.RoomBooking;
+import com.hackaboss.agenciaTurismo.model.*;
 import com.hackaboss.agenciaTurismo.repository.ClientRepository;
 import com.hackaboss.agenciaTurismo.repository.HotelRepository;
 import com.hackaboss.agenciaTurismo.repository.RoomBookingRepository;
@@ -22,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Service
@@ -193,12 +191,25 @@ public class HotelService implements IHotelService{
 
 
     @Override
-    public List<RoomDTO> findByCityAndDate(String city, LocalDate dateTo, LocalDate dateFrom) {
+    public List<RoomDTO> findByCityAndDate(String city, LocalDate dateFrom, LocalDate dateTo) {
 
-        return roomRepository.findByCityAndDate(city, dateTo, dateFrom).stream()
+        Optional<List<Room>> rooms = roomRepository.findByCityAndDate(city, dateTo, dateFrom);
+
+        if (rooms.isEmpty() || rooms.get().isEmpty()) {
+
+            throw new EntityNotFoundException(ENTITY_ROOM);
+        }
+
+        return rooms.get().stream()
                 .map(this::toGetRoomDTO)
                 .toList();
+
+
     }
+
+
+
+
 
 
 
@@ -262,7 +273,7 @@ public class HotelService implements IHotelService{
 
         roomRepository.save(room);
 
-        return room.getRoomPrice();
+        return room.getRoomPrice() * ChronoUnit.DAYS.between(roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
 
     }
 
@@ -333,7 +344,8 @@ public class HotelService implements IHotelService{
         roomBooking.setDateTo(roomBookingDTO.getDateTo());
 
 
-        List<RoomBooking> upDateBookingList = roomBookingRepository.findBookingsInDateRange(roomBooking.getRoom().getId(), roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
+        List<RoomBooking> upDateBookingList = roomBookingRepository
+                .findBookingsInDateRange(roomBooking.getRoom().getId(), roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
 
         // evaluate the list of bookings in the updated date range
         List<RoomBooking> upDateRoomBooking = upDateBookingList.stream()
@@ -343,20 +355,14 @@ public class HotelService implements IHotelService{
 
         if(upDateBookingList.isEmpty()|| upDateRoomBooking.size() == 1 ){
 
-            updateBooking(roomBooking);
+            boolean roomBookedEveryday = isRoomBookedEveryday(roomBooking.getRoom().getId(),
+                    roomBooking.getRoom().getDateFrom(), roomBooking.getRoom().getDateTo());
+
+            roomBooking.getRoom().setBooked(roomBookedEveryday);
+
+            roomBookingRepository.save(roomBooking);
         }
         else throw new AlreadyExistEntityException(ENTITY_ROOM_BOOKING);
-    }
-
-
-
-    private void updateBooking(RoomBooking roomBooking) {
-
-        boolean roomBookedEveryday = isRoomBookedEveryday(roomBooking.getRoom().getId(), roomBooking.getRoom().getDateFrom(), roomBooking.getRoom().getDateTo());
-
-        roomBooking.getRoom().setBooked(roomBookedEveryday);
-
-        roomBookingRepository.save(roomBooking);
     }
 
 

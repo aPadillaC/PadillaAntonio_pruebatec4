@@ -16,5 +16,6 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     Optional<Room> findByIdAndNotDeleted(Integer id);
 
     @Query("SELECT r FROM Room r WHERE r.hotel.city = :city AND r.dateFrom <= :dateFrom AND r.dateTo >= :dateTo AND r.isDeleted = false AND r.isBooked = false")
-    List<Room> findByCityAndDate(String city, LocalDate dateFrom,  LocalDate dateTo);
+    Optional<List<Room>> findByCityAndDate(String city, LocalDate dateFrom,  LocalDate dateTo);
+
 }

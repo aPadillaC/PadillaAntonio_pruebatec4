@@ -153,7 +153,7 @@ public class HotelController {
                                                        fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
                                                    @RequestParam("dateFrom") LocalDate dateFrom) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(hotelService.findByCityAndDate(city, dateTo, dateFrom));
+        return ResponseEntity.status(HttpStatus.OK).body(hotelService.findByCityAndDate(city, dateFrom, dateTo));
     }
 
 
@@ -244,7 +244,7 @@ public class HotelController {
 
 
     // Exception handler for various exceptions
-    @ExceptionHandler({EntityNotFoundException.class , ParameterConflictException.class})
+    @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<Map<String, String>> handleNotFoundException(RuntimeException ex) {
 
         Map<String, String> response = new HashMap<>();
@@ -252,12 +252,12 @@ public class HotelController {
         response.put("error", ex.getMessage());
 
         // Handle the exception and return an appropriate response to the client.
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
 
 
-    @ExceptionHandler({AlreadyExistEntityException.class, HasBookingsException.class})
+    @ExceptionHandler({AlreadyExistEntityException.class, HasBookingsException.class, ParameterConflictException.class})
     public ResponseEntity<Map<String, String>> handleExistingEntitiesException(RuntimeException ex) {
 
         Map<String, String> response = new HashMap<>();
