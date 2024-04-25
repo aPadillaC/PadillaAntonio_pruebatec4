@@ -5,8 +5,9 @@ import com.hackaboss.agenciaTurismo.dto.HotelDTO;
 import com.hackaboss.agenciaTurismo.dto.RoomBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.RoomDTO;
 import com.hackaboss.agenciaTurismo.exception.AlreadyExistEntityException;
-import com.hackaboss.agenciaTurismo.exception.CannotBeDeletedBecauseItHasBookingsException;
+import com.hackaboss.agenciaTurismo.exception.HasBookingsException;
 import com.hackaboss.agenciaTurismo.exception.EntityNotFoundException;
+import com.hackaboss.agenciaTurismo.exception.ParameterConflictException;
 import com.hackaboss.agenciaTurismo.model.Client;
 import com.hackaboss.agenciaTurismo.model.Hotel;
 import com.hackaboss.agenciaTurismo.model.Room;
@@ -155,7 +156,7 @@ public class HotelService implements IHotelService{
                     .flatMap(room -> room.getRoomBookingList().stream())
                     .anyMatch(roomBooking -> !roomBooking.isCompleted());
 
-            if(bookingExists) throw new CannotBeDeletedBecauseItHasBookingsException("Hotel cannot be deleted because it has bookings.");
+            if(bookingExists) throw new HasBookingsException("Hotel cannot be deleted because it has bookings.");
 
             hotel.setDeleted(true);
             hotel.getRooms().forEach(room -> room.setDeleted(true));
@@ -181,7 +182,7 @@ public class HotelService implements IHotelService{
 
         if(bookingExists){
 
-            throw new CannotBeDeletedBecauseItHasBookingsException("Room cannot be deleted because it has bookings.");
+            throw new HasBookingsException("Room cannot be deleted because it has bookings.");
         }
 
         room.setDeleted(true);
@@ -207,7 +208,14 @@ public class HotelService implements IHotelService{
         Room room = roomRepository.findByIdAndNotDeleted(roomId)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_ROOM));
 
+        if(room.isBooked()) throw new ParameterConflictException("Room is already booked for all days.");
+
         boolean bookingExist = isBookingExist(room, roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
+
+        if(roomBookingDTO.getDateFrom().isBefore(room.getDateFrom()) || roomBookingDTO.getDateTo().isAfter(room.getDateTo())) {
+
+            throw new ParameterConflictException("Booking dates must be within room availability dates.");
+        }
 
         if (bookingExist) throw new AlreadyExistEntityException(ENTITY_ROOM_BOOKING);
 
@@ -227,7 +235,14 @@ public class HotelService implements IHotelService{
             clientRepository.save(client);
         }
 
-        else client = existingClient;
+        else if(existingClient.getName().equals(clientDTO.getName()) &&
+                existingClient.getLastName().equals(clientDTO.getLastName())){
+
+            client = existingClient;
+        }
+
+        else throw new ParameterConflictException("There is customer data that exists in the database but is wrong " +
+                    "in the request.");
 
         RoomBooking roomBooking = new RoomBooking();
 
@@ -285,10 +300,14 @@ public class HotelService implements IHotelService{
     @Override
     public void deleteRoomBooking(Integer roomBookingId) {
 
-        RoomBooking roomBooking = roomBookingRepository.findById(roomBookingId)
+        RoomBooking roomBooking = roomBookingRepository.findByIdAndNotDeleted(roomBookingId)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_ROOM_BOOKING));
 
         roomBooking.setDeleted(true);
+
+        roomBooking.getRoom().setBooked(false);
+
+        roomRepository.save(roomBooking.getRoom());
 
         roomBookingRepository.save(roomBooking);
     }
@@ -297,24 +316,50 @@ public class HotelService implements IHotelService{
     @Override
     public void updateRoomBooking(Integer roomBookingId, RoomBookingDTO roomBookingDTO) {
 
+        if (roomBookingDTO.getDateFrom() == null || roomBookingDTO.getDateTo() == null)
+            throw new ParameterConflictException( "Booking dates must be provided.");
+
         RoomBooking roomBooking = roomBookingRepository.findByIdAndNotDeleted(roomBookingId)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_ROOM_BOOKING));
 
-        if(roomBookingDTO.getDateFrom() != null) roomBooking.setDateFrom(roomBookingDTO.getDateFrom());
-        if(roomBookingDTO.getDateTo() != null) roomBooking.setDateTo(roomBookingDTO.getDateTo());
+        if(roomBooking.getRoom().isBooked()) throw new ParameterConflictException("Room is already booked for all days.");
 
-        boolean bookingExist = isBookingExist(roomBooking.getRoom(), roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
+        if(roomBookingDTO.getDateFrom().isBefore(roomBooking.getRoom().getDateFrom()) || roomBookingDTO.getDateTo().isAfter(roomBooking.getRoom().getDateTo())) {
 
-        if(!bookingExist) {
-
-            roomBookingRepository.save(roomBooking);
-            boolean roomBookedEveryday = isRoomBookedEveryday(roomBooking.getRoom().getId(), roomBooking.getRoom().getDateFrom(), roomBooking.getRoom().getDateTo());
-
-            roomBooking.getRoom().setBooked(roomBookedEveryday);
+            throw new ParameterConflictException("Booking dates must be within room availability dates.");
         }
 
+        roomBooking.setDateFrom(roomBookingDTO.getDateFrom());
+        roomBooking.setDateTo(roomBookingDTO.getDateTo());
+
+
+        List<RoomBooking> upDateBookingList = roomBookingRepository.findBookingsInDateRange(roomBooking.getRoom().getId(), roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
+
+        // evaluate the list of bookings in the updated date range
+        List<RoomBooking> upDateRoomBooking = upDateBookingList.stream()
+                .filter( booking -> booking.getId().equals(roomBookingId))
+                .toList();
+
+
+        if(upDateBookingList.isEmpty()|| upDateRoomBooking.size() == 1 ){
+
+            updateBooking(roomBooking);
+        }
         else throw new AlreadyExistEntityException(ENTITY_ROOM_BOOKING);
     }
+
+
+
+    private void updateBooking(RoomBooking roomBooking) {
+
+        boolean roomBookedEveryday = isRoomBookedEveryday(roomBooking.getRoom().getId(), roomBooking.getRoom().getDateFrom(), roomBooking.getRoom().getDateTo());
+
+        roomBooking.getRoom().setBooked(roomBookedEveryday);
+
+        roomBookingRepository.save(roomBooking);
+    }
+
+
 
     @Override
     public void completeRoomBooking(Integer roomBookingId) {
@@ -327,6 +372,8 @@ public class HotelService implements IHotelService{
         roomBookingRepository.save(roomBooking);
     }
 
+
+
     @Override
     public void addHotelList(List<Hotel> hotelList) {
 
@@ -334,6 +381,8 @@ public class HotelService implements IHotelService{
 
         hotelRepository.saveAll(hotelList);
     }
+
+
 
     @Override
     public void addRoomList(Integer hotelId, List<Room> roomList) {
@@ -351,6 +400,7 @@ public class HotelService implements IHotelService{
 
             hotelRepository.save(hotel);
     }
+
 
 
     @Override

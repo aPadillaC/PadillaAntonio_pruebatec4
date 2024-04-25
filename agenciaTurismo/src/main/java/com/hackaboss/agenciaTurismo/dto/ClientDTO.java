@@ -26,7 +26,8 @@ public class ClientDTO {
             message = "NIF must be 8 numbers followed by a letter")
     private String nif;
 
-    @Email(message = "Email must be a valid email")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            message = "Email must be a valid email")
     private String email;
 
 }

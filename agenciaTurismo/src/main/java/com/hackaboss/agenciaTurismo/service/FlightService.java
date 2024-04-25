@@ -97,7 +97,7 @@ public class FlightService implements IFlightService{
                 .anyMatch(booking -> !booking.isDeleted());
 
         if (bookingExists) {
-            throw new CannotBeDeletedBecauseItHasBookingsException("Flight cannot be deleted because it has bookings.");
+            throw new HasBookingsException("Flight cannot be deleted because it has bookings.");
         }
 
         flight.setDeleted(true);
@@ -145,7 +145,7 @@ public class FlightService implements IFlightService{
         flightBookingRepository.save(flightBooking);
 
         flightExist.getFlightBookingList().add(flightBooking);
-        flightExist.upDateAvailableSeats(flightBooking);
+        flightExist.upDateAvailableSeats(flightBooking, "add");
 
         flightRepository.save(flightExist);
 
@@ -181,7 +181,13 @@ public class FlightService implements IFlightService{
                 clientList.add(client);
             }
 
-            else clientList.add(existingClient);
+            else if(existingClient.getName().equals(clientDTO.getName()) && existingClient.getLastName().equals(clientDTO.getLastName())){
+
+                clientList.add(existingClient);
+            }
+
+            else throw new ParameterConflictException("There is customer data that exists in the database but is wrong " +
+                        "in the request.");
         });
         return clientList;
     }
@@ -219,7 +225,7 @@ public class FlightService implements IFlightService{
     @Override
     public void updateFlightBooking(Integer flightBookingId, FlightBookingDTO flightBookingDTO) {
 
-        FlightBooking flightBooking = flightBookingRepository.findById(flightBookingId)
+        FlightBooking flightBooking = flightBookingRepository.findByIdAndNotDeleted(flightBookingId)
                 .orElseThrow( () -> new BookingNotFoundException("Flight booking not found"));
 
         if(flightBookingDTO.getSeatType() != null && !flightBookingDTO.getSeatType().isBlank()) flightBooking.setSeatType(flightBookingDTO.getSeatType());
@@ -246,11 +252,13 @@ public class FlightService implements IFlightService{
     @Override
     public void deleteFlightBooking(Integer flightBookingId) {
 
-            FlightBooking flightBooking = flightBookingRepository.findById(flightBookingId)
+            FlightBooking flightBooking = flightBookingRepository.findByIdAndNotDeleted(flightBookingId)
                     .orElseThrow( () -> new BookingNotFoundException("Flight booking not found"));
 
             flightBooking.setDeleted(true);
+            flightBooking.getFlight().upDateAvailableSeats(flightBooking, "remove");
 
+            flightRepository.save(flightBooking.getFlight());
             flightBookingRepository.save(flightBooking);
     }
 

@@ -1,7 +1,6 @@
 package com.hackaboss.agenciaTurismo.dto;
 
-import com.hackaboss.agenciaTurismo.model.Client;
-import com.hackaboss.agenciaTurismo.model.Room;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +41,7 @@ public class RoomBookingDTO {
             message = "Origin must be 3 characters long")
     private String roomType;
 
+    @Valid
     private ClientDTO client;
 
 
@@ -56,6 +56,8 @@ public class RoomBookingDTO {
         this.roomType = roomType;
         this.client = client;
     }
+
+
 
     // Constructor for add room-Booking
     public RoomBookingDTO(LocalDate dateFrom, LocalDate dateTo, ClientDTO client) {

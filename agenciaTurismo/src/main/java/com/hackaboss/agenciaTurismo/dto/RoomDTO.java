@@ -1,7 +1,7 @@
 package com.hackaboss.agenciaTurismo.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.hackaboss.agenciaTurismo.model.RoomBooking;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -41,6 +41,8 @@ public class RoomDTO {
             iso = DateTimeFormat.ISO.DATE,
             fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
     private LocalDate dateTo;
+
+    @Valid
     private List<RoomBookingDTO> roomBookingList;
 
 

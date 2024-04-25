@@ -5,7 +5,6 @@ import com.hackaboss.agenciaTurismo.dto.RoomBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.RoomDTO;
 import com.hackaboss.agenciaTurismo.model.Hotel;
 import com.hackaboss.agenciaTurismo.model.Room;
-import com.hackaboss.agenciaTurismo.model.RoomBooking;
 
 import java.time.LocalDate;
 import java.util.List;

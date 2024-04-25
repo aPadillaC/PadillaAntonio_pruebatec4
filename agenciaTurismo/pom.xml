@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.hackaboss</groupId>
-	<artifactId>agenciaTurismo</artifactId>
+	<artifactId>agenciaturismo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>agenciaTurismo</name>
 	<description>Demo project for Spring Boot</description>

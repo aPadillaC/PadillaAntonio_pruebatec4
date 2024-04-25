@@ -1,6 +1,7 @@
 package com.hackaboss.agenciaTurismo.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -38,6 +39,7 @@ public class FlightDTO {
     @Min(value = 0, message = "Available seats must be greater than 0")
     private Integer availableSeats;
 
+    @Valid
     private List<FlightBookingDTO> flightBookingList;
 
     public FlightDTO(String flightCode, String origin, String destination, LocalDate date, Integer availableSeats) {

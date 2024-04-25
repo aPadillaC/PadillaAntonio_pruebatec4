@@ -1,5 +1,6 @@
 package com.hackaboss.agenciaTurismo.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -44,6 +45,7 @@ public class FlightBookingDTO {
     @Min(value = 0, message = "Seat price must be greater than 0")
     private Double seatPrice;
 
+    @Valid
     private List<ClientDTO> clientList;
 
     // Constructor for get flight-Booking

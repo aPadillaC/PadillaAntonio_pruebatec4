@@ -4,6 +4,6 @@ public class AlreadyExistEntityException extends RuntimeException{
 
     public AlreadyExistEntityException(String entity) {
 
-        super("A " + entity + " with the same characteristics already exists.");
+        super("A " + entity + " with the same/partial characteristics already exists.");
     }
 }

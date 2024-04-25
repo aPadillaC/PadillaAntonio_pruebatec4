@@ -1,6 +1,7 @@
 package com.hackaboss.agenciaTurismo.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class HotelDTO {
 
     private String hotelCode;
 
+    @Valid
     private List<RoomDTO> rooms;
 
     // Get one hotel

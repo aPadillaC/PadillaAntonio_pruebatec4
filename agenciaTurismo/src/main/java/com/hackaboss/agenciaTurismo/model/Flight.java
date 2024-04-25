@@ -63,9 +63,10 @@ public class Flight {
     }
 
 
-    public void upDateAvailableSeats(FlightBooking flightBooking) {
+    public void upDateAvailableSeats(FlightBooking flightBooking, String action) {
 
-        this.availableSeats -=  flightBooking.getClientList().size();
+        if(action.equals("add")) this.availableSeats -= flightBooking.getClientList().size();
+        else this.availableSeats +=  flightBooking.getClientList().size();
     }
 
 
