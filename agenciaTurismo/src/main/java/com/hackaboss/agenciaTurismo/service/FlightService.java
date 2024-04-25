@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class FlightService implements IFlightService{
@@ -53,7 +50,7 @@ public class FlightService implements IFlightService{
     public List<FlightDTO> getFlights() {
 
         return flightRepository.findAllNotDeleted().stream()
-                .map(this::toFlightDTO)
+                .map(this::toGetFlightDTO)
                 .toList();
     }
 
@@ -213,13 +210,16 @@ public class FlightService implements IFlightService{
     @Override
     public List<FlightBookingDTO> getFlightBookingForFlightById(Integer flightId) {
 
-        return flightRepository.findFlightByIdAndNotDeleted(flightId).stream()
-                .flatMap(flight -> flight.getFlightBookingList().stream()
-                        .filter(booking -> !booking.isDeleted())
-                        .map(this::toFlightBookingDTO))
+        Flight flight = flightRepository.findFlightByIdAndNotDeleted(flightId)
+                .orElseThrow(FlightNotFoundException::new);
+
+        return flight.getFlightBookingList().stream()
+                .filter(booking -> !booking.isDeleted())
+                .map(this::toFlightBookingDTO)
                 .toList();
 
     }
+
 
 
     @Override

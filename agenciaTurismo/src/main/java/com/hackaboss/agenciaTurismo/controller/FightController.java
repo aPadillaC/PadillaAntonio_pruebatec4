@@ -3,10 +3,7 @@ package com.hackaboss.agenciaTurismo.controller;
 
 import com.hackaboss.agenciaTurismo.dto.FlightBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.FlightDTO;
-import com.hackaboss.agenciaTurismo.exception.*;
 import com.hackaboss.agenciaTurismo.model.Flight;
-import com.hackaboss.agenciaTurismo.service.IClientService;
-import com.hackaboss.agenciaTurismo.service.IFlightBookingService;
 import com.hackaboss.agenciaTurismo.service.IFlightService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -15,15 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.HandlerMethodValidationException;
-import org.springframework.context.MessageSourceResolvable;
-
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+
 
 @RestController
 @RequestMapping("agency/flights")
@@ -32,11 +25,6 @@ public class FightController {
     @Autowired
     private IFlightService flightService;
 
-    @Autowired
-    private IFlightBookingService flightBookingService;
-
-    @Autowired
-    private IClientService clientService;
 
 
     // 1. Add flight
@@ -154,77 +142,5 @@ public class FightController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Flight list added");
     }
-
-
-
-    /**
-     * Handle all exceptions
-     * @param ex
-     * @return
-     */
-
-
-
-    // Exception handler for various exceptions
-    @ExceptionHandler({AllBookedException.class, BookingAlreadyExistsException.class,
-             HasBookingsException.class, FlightAlreadyExistsException.class, ParameterConflictException.class})
-    public ResponseEntity<Map<String, String>> handleBookingsException(RuntimeException ex) {
-
-        Map<String, String> response = new HashMap<>();
-
-        response.put("error", ex.getMessage());
-
-        // Handle the exception and return an appropriate response to the client.
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-    }
-
-
-
-
-    @ExceptionHandler({BookingNotFoundException.class, FlightNotFoundException.class})
-    public ResponseEntity<Map<String, String>> handleNotFoundException(RuntimeException ex) {
-
-        Map<String, String> response = new HashMap<>();
-
-        response.put("error", ex.getMessage());
-
-        // Handle the exception and return an appropriate response to the client.
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
-
-
-
-    // Exception handler for validation exceptions
-    @ExceptionHandler(HandlerMethodValidationException.class)
-    public ResponseEntity<Map<String, List<String>>> handleHandlerMethodValidationException(HandlerMethodValidationException e) {
-
-        Map<String, List<String>> response = new HashMap<>();
-        List<String> errors = e.getAllErrors()
-                .stream()
-                .map(MessageSourceResolvable::getDefaultMessage)
-                .toList();
-
-        response.put("errors", errors);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
-
-
-    // Exception handler for method argument not valid exceptions
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, List<String>>> handleValidationExceptions(
-            MethodArgumentNotValidException e) {
-        Map<String, List<String>> response = new HashMap<>();
-        List<String> errors = e.getAllErrors()
-                .stream()
-                .map(MessageSourceResolvable::getDefaultMessage)
-                .toList();
-
-        response.put("errors", errors);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
 
 }
