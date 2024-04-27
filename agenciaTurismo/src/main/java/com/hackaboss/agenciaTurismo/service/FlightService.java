@@ -8,6 +8,7 @@ import com.hackaboss.agenciaTurismo.model.*;
 import com.hackaboss.agenciaTurismo.repository.FlightBookingRepository;
 import com.hackaboss.agenciaTurismo.repository.FlightRepository;
 import com.hackaboss.agenciaTurismo.repository.ClientRepository;
+import com.hackaboss.agenciaTurismo.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,22 @@ public class FlightService implements IFlightService{
 
     @Autowired
     private FlightBookingRepository flightBookingRepository;
+
+
+
+    // Test constructor
+    public FlightService(){
+
+    }
+    public FlightService(FlightRepository flightRepository, ClientRepository clientRepository,
+                         FlightBookingRepository flightBookingRepository) {
+
+        this.flightRepository = flightRepository;
+        this.clientRepository = clientRepository;
+        this.flightBookingRepository = flightBookingRepository;
+    }
+
+    //----------------
 
 
 
@@ -49,7 +66,11 @@ public class FlightService implements IFlightService{
     @Override
     public List<FlightDTO> getFlights() {
 
-        return flightRepository.findAllNotDeleted().stream()
+        List<Flight> flightList = flightRepository.findAllNotDeleted();
+
+        if(flightList.isEmpty()) throw new FlightNotFoundException();
+
+        return flightList.stream()
                 .map(this::toGetFlightDTO)
                 .toList();
     }
@@ -267,7 +288,11 @@ public class FlightService implements IFlightService{
     @Override
     public List<FlightDTO> getFlightByDestinationOriginAndDate(String destination, String origin, LocalDate date) {
 
-        return flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(origin, destination, date).stream()
+        List<Flight> flightList = flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(origin, destination, date);
+
+        if(flightList.isEmpty()) throw new FlightNotFoundException();
+
+        return flightList.stream()
                 .map(this::toGetFlightDTO)
                 .toList();
 
@@ -284,21 +309,21 @@ public class FlightService implements IFlightService{
     }
 
 
-    private FlightDTO toFlightDTO(Flight flight) {
+    FlightDTO toFlightDTO(Flight flight) {
 
         return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
                 flight.getAvailableSeats(), flight.getFlightBookingList().stream().map(this::toFlightBookingDTO).toList());
     }
 
 
-    private FlightDTO toGetFlightDTO(Flight flight) {
+    FlightDTO toGetFlightDTO(Flight flight) {
 
         return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
                 flight.getAvailableSeats());
     }
 
 
-    private FlightBookingDTO toFlightBookingDTO(FlightBooking flightBooking) {
+    FlightBookingDTO toFlightBookingDTO(FlightBooking flightBooking) {
 
         return new FlightBookingDTO(flightBooking.getBookingCode(), flightBooking.getFlight().getDate(),
                 flightBooking.getFlight().getOrigin(), flightBooking.getFlight().getDestination(), flightBooking.getSeatType(),
@@ -306,7 +331,7 @@ public class FlightService implements IFlightService{
     }
 
 
-    private ClientDTO toClientDTO(Client client){
+    ClientDTO toClientDTO(Client client){
 
         return new ClientDTO(client.getName(), client.getLastName(), client.getNif(), client.getEmail());
     }

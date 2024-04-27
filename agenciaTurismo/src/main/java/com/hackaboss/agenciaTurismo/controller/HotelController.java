@@ -216,4 +216,13 @@ public class HotelController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Room list added");
     }
 
+
+
+    // 18. Get room-bookings by hotel id
+    @GetMapping("/{hotelId}/rooms-booking")
+    public ResponseEntity<List<RoomBookingDTO>> getRoomBookingsByHotelId(@Positive @NotNull @PathVariable Integer hotelId){
+
+        return ResponseEntity.status(HttpStatus.OK).body(hotelService.getRoomBookingsByHotelId(hotelId));
+    }
+
 }

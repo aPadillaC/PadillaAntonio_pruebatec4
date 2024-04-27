@@ -50,7 +50,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Metodo para autenticarnos dentro del flujo de Spring
+     * Method to authenticate into the Spring flow
      *
      * @param claims
      */

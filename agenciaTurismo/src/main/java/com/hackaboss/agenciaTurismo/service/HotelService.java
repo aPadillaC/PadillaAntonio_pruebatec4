@@ -43,6 +43,20 @@ public class HotelService implements IHotelService{
     private static final String ENTITY_ROOM = "room";
     public static final String ENTITY_ROOM_BOOKING = "room booking";
 
+    // Test constructor
+    public HotelService(){
+
+    }
+    public HotelService(HotelRepository hotelRepository, RoomBookingRepository roomBookingRepository,
+                        RoomRepository roomRepository, ClientRepository clientRepository) {
+
+        this.hotelRepository = hotelRepository;
+        this.roomRepository = roomRepository;
+        this.clientRepository = clientRepository;
+        this.roomBookingRepository = roomBookingRepository;
+    }
+
+    //----------------
 
     @Override
     public void addHotel(Hotel hotel) {
@@ -59,7 +73,14 @@ public class HotelService implements IHotelService{
     @Override
     public List<HotelDTO> getHotels() {
 
-        return hotelRepository.findAllNotDeleted().stream()
+        List<Hotel> hotelList = hotelRepository.findAllNotDeleted();
+
+
+        if(hotelList.isEmpty()) throw new EntityNotFoundException(ENTITY_HOTEL);
+
+
+
+        return  hotelList.stream()
                 .map(this::toGetHotelDTO)
                 .toList();
 
@@ -410,6 +431,19 @@ public class HotelService implements IHotelService{
 
 
     @Override
+    public List<RoomBookingDTO> getRoomBookingsByHotelId(Integer hotelId) {
+
+        return hotelRepository.findByIdAndNotDeleted(hotelId)
+                .map(hotel -> hotel.getRooms().stream()
+                        .flatMap(room -> room.getRoomBookingList().stream())
+                        .filter(roomBooking -> !roomBooking.isDeleted())
+                        .map(this::toRoomBookingDTO)
+                        .toList())
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_HOTEL));
+    }
+
+
+    @Override
     public HotelDTO getHotelById(Integer hotelId) {
 
         return hotelRepository.findByIdAndNotDeleted(hotelId).map(this::toHotelDTO).orElse(null);
@@ -417,34 +451,34 @@ public class HotelService implements IHotelService{
 
 
 
-    private RoomDTO toRoomDTO(Room room){
+    RoomDTO toRoomDTO(Room room){
 
         return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(),
                 room.getDateTo(), room.getRoomBookingList().stream().map(this::toRoomBookingDTO).toList());
     }
 
 
-    private RoomDTO toGetRoomDTO(Room room){
+    RoomDTO toGetRoomDTO(Room room){
 
         return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(),
                 room.getDateTo());
     }
 
 
-    private HotelDTO toHotelDTO(Hotel hotel){
+    HotelDTO toHotelDTO(Hotel hotel){
 
         return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode(),
                 hotel.getRooms().stream().map(this::toRoomDTO).toList());
     }
 
 
-    private HotelDTO toGetHotelDTO(Hotel hotel){
+    HotelDTO toGetHotelDTO(Hotel hotel){
 
         return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode());
     }
 
 
-    private RoomBookingDTO toRoomBookingDTO(RoomBooking roomBooking){
+    RoomBookingDTO toRoomBookingDTO(RoomBooking roomBooking){
 
         return new RoomBookingDTO(roomBooking.getBookingCode(), roomBooking.getDateFrom(), roomBooking.getDateTo(),
                 roomBooking.getRoom().getHotel().getCity(), roomBooking.getRoom().getHotel().getName(),
@@ -452,7 +486,7 @@ public class HotelService implements IHotelService{
     }
 
 
-    private ClientDTO toClientDTO(Client client){
+    ClientDTO toClientDTO(Client client){
 
         return new ClientDTO(client.getName(), client.getLastName(), client.getNif(), client.getEmail());
     }

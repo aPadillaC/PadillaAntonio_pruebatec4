@@ -44,6 +44,7 @@ public class RoomBooking {
     private Client client;
 
 
+
     public RoomBooking(Integer id, LocalDate dateFrom, LocalDate dateTo, Room room, Client client) {
         this.id = id;
         this.dateFrom = dateFrom;

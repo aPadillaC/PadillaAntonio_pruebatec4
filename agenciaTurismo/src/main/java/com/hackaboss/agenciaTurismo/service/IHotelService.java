@@ -43,4 +43,6 @@ public interface IHotelService {
     void addHotelList(List<Hotel> hotelList);
 
     void addRoomList(Integer hotelId, List<Room> roomList);
+
+    List<RoomBookingDTO> getRoomBookingsByHotelId(Integer hotelId);
 }
