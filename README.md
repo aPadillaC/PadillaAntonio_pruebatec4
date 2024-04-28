@@ -1,4 +1,4 @@
-# GestionDTurnos
+# AgenciaTurismo
 <p dir="auto">Este proyecto es una aplicación para una agencia de turismo que desea gestionar las solicitudes de reservas para los diferentes tipos de paquetes que ofrece. La api está desarrollada en Java utilizando el framework Spring Boot y Maven para la gestión de dependencias. Está diseñada para proporcionar funcionalidades completas para la gestión de hoteles y vuelos, incluyendo la administración de habitaciones, reservas de habitaciones/vuelos, y la información de los clientes.</p>
 
 <!-- Tecnologías Utilizadas -->
@@ -38,6 +38,7 @@
 <!-- Funcionalidades Detalladas -->
 
 <h2 dir="auto">Funcionalidades Detalladas</h2>
+<br>
 
 <h3>* Hoteles </h3>
 
@@ -65,6 +66,7 @@
     <li><strong>GET</strong> /agency/hotels/{hotelId}/rooms-booking: Obtiene una lista de reservas de habitaciones por ID de hotel.</li>
 </ul>
 
+<br>
 
 <h3>* Vuelos </h3>
 
@@ -175,22 +177,22 @@
 
 <ul dir="auto">
 	<li>Vamos a la ruta "http://localhost:8080/agency/admin/login" y pasamos por el body el user y password: 
-		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/index.png"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/index.png" alt="Paso 1" style="max-width: 100%;"></a>   
+		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso1.jpg"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso1.jpg" alt="Paso 1" style="max-width: 100%;"></a>   
 	</li>
 	<li>Obtenemos el token generado con JWT: 
-		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/vistaPrincipal.png"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/vistaPrincipal.png" alt="Paso 2" style="max-width: 100%;"></a>   
+		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso2.jpg"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso2.jpg" alt="Paso 2" style="max-width: 100%;"></a>   
 	</li>
 	<li>Vamos a una de las rutas protegidas y compromamos que sin meter el token no me deja realizar la petición solicitada
-		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/tramites.png"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/tramites.png" alt="Paso 3" style="max-width: 100%;"></a>   
+		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso3.jpg"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso3.jpg" alt="Paso 3" style="max-width: 100%;"></a>   
 	</li>
 	<li>Pegamos en headers -> Key(Authorization) -> Value(token obtenido) 
-		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/registroTurno.png"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/registroTurno.png" alt="Paso 4" style="max-width: 100%;"></a>   
+		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso4.jpg"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso4.jpg" alt="Paso 4" style="max-width: 100%;"></a>   
 	</li>       
 	<li>Le damos a enviar y comprobamos que ahora si se realiza la gestión solicitada: 
-		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/editarTurno1.png"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/editarTurno1.png" alt="Paso 5" style="max-width: 100%;"></a>    
+		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso5.jpg"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso5.jpg" alt="Paso 5" style="max-width: 100%;"></a>    
 	</li>    
 	<li>Dejamos pasar unos minutos y volvemos a intentar repetir la misma acción. En este caso no nos permitiría realizarla de nuevo ya que la vida del token expiró. Habría que volver a realizar el login y seguir los mismos pasos. 
-		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/principalListado.png"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec2/blob/master/screenshots/principalListado.png" alt="Paso 6" style="max-width: 100%;"></a>   
+		<a target="_blank" rel="noopener noreferrer" href="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso6.jpg"><img src="https://github.com/aPadillaC/PadillaAntonio_pruebatec4/blob/master/screenshots/Paso6.jpg" alt="Paso 6" style="max-width: 100%;"></a>   
 	</li>    
 </ul>
 
