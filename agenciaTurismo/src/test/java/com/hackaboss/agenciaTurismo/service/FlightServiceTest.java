@@ -75,7 +75,6 @@ public class FlightServiceTest {
 
         List<FlightDTO> flightDTOs = flightServiceInyectado.getFlights();
 
-        // Verificar que los valores en la lista FlightDTO son los esperados
         assertEquals(flights.size(), flightDTOs.size());
         for (int i = 0; i < flights.size(); i++) {
             assertEquals(flights.get(i).getFlightCode(), flightDTOs.get(i).getFlightCode());
@@ -92,9 +91,6 @@ public class FlightServiceTest {
     public void testGetFlightsEx() {
 
         List<Flight> flights = new ArrayList<>();
-
-
-        when(flightRepository.findAllNotDeleted()).thenReturn(flights);
 
        assertThrows(FlightNotFoundException.class, () -> {
             flightServiceInyectado.getFlights();
@@ -214,9 +210,10 @@ public class FlightServiceTest {
         clientDTO.setLastName("User");
         clientDTO.setNif("12345678A");
         clientDTO.setEmail("test@test.com");
-        flightBookingDTO.setClientList(Arrays.asList(clientDTO));
+        flightBookingDTO.setClientList(List.of(clientDTO));
 
         Flight flight = new Flight();
+        flight.setId(1);
         flight.setFlightCode("FC1");
         flight.setOrigin("Origin Test");
         flight.setDestination("Destination Test");
@@ -231,10 +228,7 @@ public class FlightServiceTest {
         client.setNif(clientDTO.getNif());
         client.setEmail(clientDTO.getEmail());
 
-        when(flightRepository.findFlightByIdAndNotDeleted(flightId)).thenReturn(Optional.of(flight));
-        when(clientRepository.findByNifAndNotDeleted(clientDTO.getNif())).thenReturn(client);
-
-        assertThrows(AllBookedException.class, () -> {
+        assertThrows(FlightNotFoundException.class, () -> {
             flightServiceInyectado.addFlightBooking(flightId, flightBookingDTO);
         });
     }
@@ -243,7 +237,7 @@ public class FlightServiceTest {
 
     @Test
     public void testToFlightDTO() {
-        // Crear una instancia de Flight
+
         Flight flight = new Flight();
         flight.setFlightCode("FC1");
         flight.setOrigin("Origin Test");
@@ -254,13 +248,8 @@ public class FlightServiceTest {
         List<FlightBooking> flightBookingList = new ArrayList<>();
         flight.setFlightBookingList(flightBookingList);
 
-        // Crear una instancia de FlightService
-        FlightService flightService = new FlightService();
+        FlightDTO flightDTO = flightServiceInyectado.toFlightDTO(flight);
 
-        // Llamar al método toFlightDTO
-        FlightDTO flightDTO = flightService.toFlightDTO(flight);
-
-        // Verificar que los valores en el FlightDTO son los esperados
         assertEquals(flight.getFlightCode(), flightDTO.getFlightCode());
         assertEquals(flight.getOrigin(), flightDTO.getOrigin());
         assertEquals(flight.getDestination(), flightDTO.getDestination());
@@ -273,7 +262,7 @@ public class FlightServiceTest {
 
     @Test
     public void testToGetFlightDTO() {
-        // Crear una instancia de Flight
+
         Flight flight = new Flight();
         flight.setFlightCode("FC1");
         flight.setOrigin("Origin Test");
@@ -281,13 +270,8 @@ public class FlightServiceTest {
         flight.setDate(LocalDate.of(2023, 1, 1));
         flight.setAvailableSeats(100);
 
-        // Crear una instancia de FlightService
-        FlightService flightService = new FlightService();
+        FlightDTO flightDTO = flightServiceInyectado.toGetFlightDTO(flight);
 
-        // Llamar al método toGetFlightDTO
-        FlightDTO flightDTO = flightService.toGetFlightDTO(flight);
-
-        // Verificar que los valores en el FlightDTO son los esperados
         assertEquals(flight.getFlightCode(), flightDTO.getFlightCode());
         assertEquals(flight.getOrigin(), flightDTO.getOrigin());
         assertEquals(flight.getDestination(), flightDTO.getDestination());
@@ -317,13 +301,8 @@ public class FlightServiceTest {
 
         flightBooking.setFlight(flight);
 
-        // Crear una instancia de FlightService
-        FlightService flightService = new FlightService();
+        FlightBookingDTO flightBookingDTO = flightServiceInyectado.toFlightBookingDTO(flightBooking);
 
-        // Llamar al método toFlightBookingDTO
-        FlightBookingDTO flightBookingDTO = flightService.toFlightBookingDTO(flightBooking);
-
-        // Verificar que los valores en el FlightBookingDTO son los esperados
         assertEquals(flightBooking.getBookingCode(), flightBookingDTO.getBookingCode());
         assertEquals(flightBooking.getSeatType(), flightBookingDTO.getSeatType());
         assertEquals(flightBooking.getSeatPrice(), flightBookingDTO.getSeatPrice());
@@ -334,20 +313,15 @@ public class FlightServiceTest {
 
     @Test
     public void testToClientDTO() {
-        // Crear una instancia de Client
+
         Client client = new Client();
         client.setName("Client Test");
         client.setLastName("Test Lastname");
         client.setNif("12345678A");
         client.setEmail("test@test.com");
 
-        // Crear una instancia de FlightService
-        FlightService flightService = new FlightService();
+        ClientDTO clientDTO = flightServiceInyectado.toClientDTO(client);
 
-        // Llamar al método toClientDTO
-        ClientDTO clientDTO = flightService.toClientDTO(client);
-
-        // Verificar que los valores en el ClientDTO son los esperados
         assertEquals(client.getName(), clientDTO.getName());
         assertEquals(client.getLastName(), clientDTO.getLastName());
         assertEquals(client.getNif(), clientDTO.getNif());

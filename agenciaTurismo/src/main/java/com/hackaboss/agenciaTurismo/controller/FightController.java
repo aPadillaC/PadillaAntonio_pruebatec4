@@ -123,7 +123,7 @@ public class FightController {
 
 
 
-    //9. Delete flight-booking
+    //10. Delete flight-booking
     @DeleteMapping("/flight-booking/delete/{flightBookingId}")
     public ResponseEntity<String> deleteFlightBooking(@Positive @NotNull @PathVariable Integer flightBookingId){
 
@@ -134,7 +134,7 @@ public class FightController {
 
 
 
-    //10. Add flightList
+    //11. Add flightList
     @PostMapping("/newList")
     public ResponseEntity<String> addFlightList(@Valid @RequestBody List<Flight> flightList){
 

@@ -8,7 +8,6 @@ import com.hackaboss.agenciaTurismo.model.*;
 import com.hackaboss.agenciaTurismo.repository.FlightBookingRepository;
 import com.hackaboss.agenciaTurismo.repository.FlightRepository;
 import com.hackaboss.agenciaTurismo.repository.ClientRepository;
-import com.hackaboss.agenciaTurismo.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,22 +17,19 @@ import java.util.*;
 @Service
 public class FlightService implements IFlightService{
 
-    @Autowired
-    private FlightRepository flightRepository;
-
-    @Autowired
-    private ClientRepository clientRepository;
+    private  FlightRepository flightRepository;
 
 
-    @Autowired
-    private FlightBookingRepository flightBookingRepository;
+    private  ClientRepository clientRepository;
+
+
+    private  FlightBookingRepository flightBookingRepository;
 
 
 
     // Test constructor
-    public FlightService(){
 
-    }
+    @Autowired
     public FlightService(FlightRepository flightRepository, ClientRepository clientRepository,
                          FlightBookingRepository flightBookingRepository) {
 
@@ -41,6 +37,8 @@ public class FlightService implements IFlightService{
         this.clientRepository = clientRepository;
         this.flightBookingRepository = flightBookingRepository;
     }
+
+
 
     //----------------
 

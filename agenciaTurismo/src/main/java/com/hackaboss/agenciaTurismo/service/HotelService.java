@@ -25,28 +25,22 @@ import java.util.stream.IntStream;
 @Service
 public class HotelService implements IHotelService{
 
-    @Autowired
+
     private HotelRepository hotelRepository;
 
-    @Autowired
     private RoomRepository roomRepository;
 
-
-    @Autowired
     private ClientRepository clientRepository;
 
-
-    @Autowired
     private RoomBookingRepository roomBookingRepository;
+
 
     public static final String ENTITY_HOTEL = "hotel";
     private static final String ENTITY_ROOM = "room";
     public static final String ENTITY_ROOM_BOOKING = "room booking";
 
     // Test constructor
-    public HotelService(){
 
-    }
     public HotelService(HotelRepository hotelRepository, RoomBookingRepository roomBookingRepository,
                         RoomRepository roomRepository, ClientRepository clientRepository) {
 

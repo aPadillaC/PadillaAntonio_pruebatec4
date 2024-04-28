@@ -16,13 +16,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class AdminController {
 
     @PostMapping("/login")
-    public User login(@RequestParam("user") String username, @RequestParam("password") String pwd) {
+    public User login(@RequestBody User user) {
 
-        String token = getJWTToken(username);
-        User user = new User();
-        user.setUser(username);
-        user.setPassword(pwd);
+        String token = getJWTToken(user.getUser());
+
         user.setToken(token);
+
         return user;
 
     }

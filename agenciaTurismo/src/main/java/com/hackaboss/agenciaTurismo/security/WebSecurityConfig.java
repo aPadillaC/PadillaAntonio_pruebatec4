@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig extends SecurityConfigurerAdapter {
@@ -21,7 +23,33 @@ class WebSecurityConfig extends SecurityConfigurerAdapter {
                 .csrf().disable()
                 .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .requestMatchers(HttpMethod.GET, "agency/hotels").authenticated()
+                .requestMatchers(
+                        Arrays.toString(new HttpMethod[]{HttpMethod.POST}), "agency/hotels/new"
+                ).authenticated()
+                .requestMatchers(
+                        Arrays.toString(new HttpMethod[]{HttpMethod.PUT}), "agency/hotels/edit/{hotelId}"
+                ).authenticated()
+                .requestMatchers(
+                        Arrays.toString(new HttpMethod[]{HttpMethod.DELETE}), "agency/hotels/delete/{hotelId}"
+                ).authenticated()
+                .requestMatchers(
+                        Arrays.toString(new HttpMethod[]{HttpMethod.POST}), "agency/hotels/{hotelId}/rooms/new"
+                ).authenticated()
+                .requestMatchers(
+                        Arrays.toString(new HttpMethod[]{HttpMethod.PUT}), "/{hotelId}/rooms/edit/{roomId}"
+                ).authenticated()
+                .requestMatchers(
+                        Arrays.toString(new HttpMethod[]{HttpMethod.DELETE}), "/{hotelId}/rooms/delete/{roomId}"
+                ).authenticated()
+                .requestMatchers(
+                        Arrays.toString(new HttpMethod[]{HttpMethod.POST}), "agency/flights/new"
+                ).authenticated()
+                .requestMatchers(
+                        Arrays.toString(new HttpMethod[]{HttpMethod.PUT}), "agency/flights/edit/{flightId}"
+                ).authenticated()
+                .requestMatchers(
+                        Arrays.toString(new HttpMethod[]{HttpMethod.DELETE}), "agency/flights/delete/{flightId}"
+                ).authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin().permitAll()

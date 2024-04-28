@@ -60,7 +60,7 @@ public class HotelServiceTest {
     @Test
     public void testGetHotels() {
 
-        // Crear una lista de hoteles
+        // Prepare test data
         Hotel hotel1 = new Hotel();
         hotel1.setId(1);
         hotel1.setName("Hotel Test 1");
@@ -101,7 +101,6 @@ public class HotelServiceTest {
 
         when(hotelRepository.findAllNotDeleted()).thenReturn(hotels);
 
-
         assertThrows(EntityNotFoundException.class, () -> hotelServiceInyectado.getHotels());
     }
 
@@ -109,14 +108,14 @@ public class HotelServiceTest {
 
     @Test
     public void testFindByCityAndDate() {
-        // Preparar datos de prueba
+
         String city = "Test City";
         LocalDate dateFrom = LocalDate.of(2023, 1, 1);
         LocalDate dateTo = LocalDate.of(2023, 12, 31);
 
         Room room1 = new Room();
         room1.setId(1);
-        room1.setRoomType("Single");
+        room1.setRoomType("Deluxe");
         room1.setRoomPrice(100.0);
         room1.setRoomCode("S1");
         room1.setDateFrom(LocalDate.of(2023, 1, 1));
@@ -174,15 +173,15 @@ public class HotelServiceTest {
         roomBookingDTO.setDateFrom(LocalDate.of(2023, 1, 1));
         roomBookingDTO.setDateTo(LocalDate.of(2023, 12, 31));
         ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setName("Test");
-        clientDTO.setLastName("User");
+        clientDTO.setName("Test name");
+        clientDTO.setLastName("Test LastName");
         clientDTO.setNif("12345678A");
         clientDTO.setEmail("test@test.com");
         roomBookingDTO.setClient(clientDTO);
 
         Room room = new Room();
         room.setId(roomId);
-        room.setRoomType("Single");
+        room.setRoomType("Deluxe");
         room.setRoomPrice(100.0);
         room.setRoomCode("S1");
         room.setDateFrom(LocalDate.of(2023, 1, 1));
@@ -199,10 +198,8 @@ public class HotelServiceTest {
         when(roomRepository.findByIdAndNotDeleted(roomId)).thenReturn(Optional.of(room));
         when(clientRepository.findByNifAndNotDeleted(clientDTO.getNif())).thenReturn(client);
 
-        // Llamar al método que se está probando
         Double result = hotelServiceInyectado.addRoomBooking(roomId, roomBookingDTO);
 
-        // Verificar que el resultado es el esperado
         Double expected = room.getRoomPrice() * (roomBookingDTO.getDateTo().toEpochDay() - roomBookingDTO.getDateFrom().toEpochDay());
         assertEquals(expected, result);
     }
@@ -217,15 +214,15 @@ public class HotelServiceTest {
         roomBookingDTO.setDateFrom(LocalDate.of(2023, 1, 1));
         roomBookingDTO.setDateTo(LocalDate.of(2023, 12, 31));
         ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setName("Test");
-        clientDTO.setLastName("User");
+        clientDTO.setName("Test name");
+        clientDTO.setLastName("Test LastName");
         clientDTO.setNif("12345678A");
         clientDTO.setEmail("test@test.com");
         roomBookingDTO.setClient(clientDTO);
 
         Room room = new Room();
         room.setId(roomId);
-        room.setRoomType("Single");
+        room.setRoomType("Deluxe");
         room.setRoomPrice(100.0);
         room.setRoomCode("S1");
         room.setDateFrom(LocalDate.of(2023, 1, 1));
@@ -277,7 +274,6 @@ public class HotelServiceTest {
 
         HotelDTO hotelDTO = hotelServiceInyectado.toGetHotelDTO(hotel);
 
-        // Verificar que los valores en el HotelDTO son los esperados
         assertEquals(hotel.getId(), hotelDTO.getId());
         assertEquals(hotel.getName(), hotelDTO.getName());
         assertEquals(hotel.getCity(), hotelDTO.getCity());
@@ -291,7 +287,7 @@ public class HotelServiceTest {
 
         Room room = new Room();
         room.setId(1);
-        room.setRoomType("Single");
+        room.setRoomType("Deluxe");
         room.setRoomPrice(100.0);
         room.setRoomCode("S1");
         room.setDateFrom(LocalDate.of(2023, 1, 1));
@@ -314,7 +310,7 @@ public class HotelServiceTest {
 
         Room room = new Room();
         room.setId(1);
-        room.setRoomType("Single");
+        room.setRoomType("Deluxe");
         room.setRoomPrice(100.0);
         room.setRoomCode("S1");
         room.setDateFrom(LocalDate.of(2023, 1, 1));
@@ -377,7 +373,7 @@ public class HotelServiceTest {
     public void testToClientDTO() {
 
         Client client = new Client();
-        client.setName("Client Test");
+        client.setName("Test Name");
         client.setLastName("Test Lastname");
         client.setNif("12345678A");
         client.setEmail("test@test.com");
@@ -389,7 +385,5 @@ public class HotelServiceTest {
         assertEquals(client.getNif(), clientDTO.getNif());
         assertEquals(client.getEmail(), clientDTO.getEmail());
     }
-
-
 
 }
