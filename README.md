@@ -156,15 +156,19 @@
 <ul dir="auto">
 	<li> No se ha considerado necesario implantar un borrado/edicion de un cliente ya que según se interpreta en la consigna no se aprecia la necesidad al enfocarse esta principalmente en las entidades de reservas así como las de Hotel, Habitación y Vuelos.</li>
 	<br>
+	<li> Se ha implementado simplemente dos rutas Controller principales (FlightController y HotelRepository) por considerarse que por un lado Room y RoomBooking guarda estrecha relación con Hotel y ver más legible la ruta fija "/agency/hotels" para implementar todos los endPoint/métodos correspondientes a esas entidades. Y por otro lado FlightBooking y Flight en la ruta fija "/agency/flights/.</li>
+	<br>
 	<li> Para la reserva de una habitación, se ha supuesto que solo aparezca como cliente la persona que reserva como tal y no los posibles acompañantes.</li>
 	<br>
-    <li> Para la autenticación se ha implementado un código que simule más la funcionalidad real utilizando JWT. (en el siguiente apartado explicaremos mejor la forma de autenticarse y poder acceder a las rutas protegidas).</li>
+    <li> Para la autenticación se ha implementado un código que simule más la funcionalidad real utilizando JWT. (en el siguiente apartado explicaremos mejor la forma de autenticarse y poder acceder a las rutas protegidas). Se ha tenido que crear un AdminController, un modelo de User, así como, una carpeta security con los archivos de configuración.</li>
 	<br>
 	<li>Para la busqueda de vuelos por por fecha, origen y destino, solo se muestra los resultados que cumplen con la busqueda. Para hacer el viaje de "vuelta" sería necesario invertir el orden de origen y destino tal y como indica la consigna.</li>
 	<br>
 	<li>Se ha desarrollado borrado lógico para toda la aplicación para no perder ningun dato necesario en el futuro a modo de plan de negocio. Cuando se intenta borrar un Hotel, habitación o vuelo y existe una reserva activa en ese momento, se notifica mediante una exceptión. En este caso habría que borrar, o marcar como completada antes de proceder con el borrado lógico.</li>
 	<br>
 	<li>Cuando se edita un hotel cambia automáticamente el codigo de la habitación y del hotel. Lo mismo pasa cuando se edita una habitación que cambia su código. Los códigos de reserva no se ven afectados ya que es un código que posee el cliente y no sería una buena práctica estar informándole de esos cambios que no le corresponde.</li>
+	<br>
+	<li>Para la edición de una reserva de habitación, se ha supuesto que el cliente solamente pueda modificar en este caso las fechas de la reserva. Y para una reserva de un vuelo se podría modificar el tipo de asiento así como el precio del mismo porque cambiaría de categoría.</li>
 	<br>
 	<li>Se ha desarrollado consultas a la BBDD propias a parte de las proporcionadas por JPA para realizar una mejor optimización.</li>
 	<br>
@@ -173,7 +177,7 @@
 
 <!-- Paso a paso autenticación -->
 
-<h2 dir="auto">Capturas y Demostración</h2>
+<h2 dir="auto">Capturas y Demostración (Login)</h2>
 
 <ul dir="auto">
 	<li>Vamos a la ruta "http://localhost:8080/agency/admin/login" y pasamos por el body el user y password: 
