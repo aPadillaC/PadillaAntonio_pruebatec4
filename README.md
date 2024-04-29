@@ -80,7 +80,7 @@
     <li><strong>GET</strong> /agency/flights/{flightId}: Busca un vuelo por su ID.</li>
     <li><strong>PUT</strong> /agency/flights/edit/{flightId}: Actualiza la información de un vuelo.</li>
     <li><strong>DELETE</strong> /agency/flights/delete/{flightId}: Elimina un vuelo.</li>
-    <li><strong>GET</strong> /agency/flights/search: Obtiene un vuelo por destino, origen y fecha.</li>
+    <li><strong>GET</strong> /agency/flights/search: Obtiene un vuelo por destino, origen, fecha ida y fecha vuelta.</li>
     <li><strong>POST</strong> /agency/flights/{flightId}/flight-booking/new: Añade una nueva reserva de vuelo.</li>
     <li><strong>GET</strong> /agency/flights/{flightId}/flight-booking: Obtiene las reservas de un vuelo por su ID.</li>
     <li><strong>PUT</strong> /agency/flights/flight-booking/edit/{flightBookingId}: Actualiza una reserva de vuelo.</li>

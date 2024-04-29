@@ -238,7 +238,7 @@ public class HotelService implements IHotelService{
 
         if(room.isBooked()) throw new ParameterConflictException("Room is already booked for all days.");
 
-        validateBookingDates(room, roomBookingDTO);
+        validateBookingDates(room, roomBookingDTO, null);
 
         Client client = getClient(roomBookingDTO.getClient());
 
@@ -306,10 +306,8 @@ public class HotelService implements IHotelService{
 
         if(roomBooking.getRoom().isBooked()) throw new ParameterConflictException("Room is already booked for all days.");
 
-        if(roomBookingDTO.getDateFrom().isBefore(roomBooking.getRoom().getDateFrom()) || roomBookingDTO.getDateTo().isAfter(roomBooking.getRoom().getDateTo())) {
 
-            throw new ParameterConflictException("Booking dates must be within room availability dates.");
-        }
+        validateBookingDates(roomBooking.getRoom(), roomBookingDTO, roomBookingId);
 
         roomBooking.setDateFrom(roomBookingDTO.getDateFrom());
         roomBooking.setDateTo(roomBookingDTO.getDateTo());
@@ -438,7 +436,12 @@ public class HotelService implements IHotelService{
 
 
 
-    private void validateBookingDates(Room room, RoomBookingDTO roomBookingDTO) {
+    private void validateBookingDates(Room room, RoomBookingDTO roomBookingDTO, Integer roomBookingId) {
+
+        if(!roomBookingDTO.getDateFrom().isBefore(roomBookingDTO.getDateTo())){
+
+            throw new ParameterConflictException("The start date must be before the end date.");
+        }
 
         if(roomBookingDTO.getDateFrom().isBefore(room.getDateFrom()) || roomBookingDTO.getDateTo().isAfter(room.getDateTo())) {
 
@@ -447,7 +450,7 @@ public class HotelService implements IHotelService{
 
         boolean bookingExist = isBookingExist(room, roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
 
-        if (bookingExist) {
+        if (bookingExist && roomBookingId == null) {
 
             throw new AlreadyExistEntityException(ENTITY_ROOM_BOOKING);
         }
