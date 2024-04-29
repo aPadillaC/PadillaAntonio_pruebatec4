@@ -3,7 +3,6 @@ package com.hackaboss.agenciaTurismo.service;
 import com.hackaboss.agenciaTurismo.dto.ClientDTO;
 import com.hackaboss.agenciaTurismo.dto.FlightBookingDTO;
 import com.hackaboss.agenciaTurismo.dto.FlightDTO;
-import com.hackaboss.agenciaTurismo.exception.AllBookedException;
 import com.hackaboss.agenciaTurismo.exception.FlightNotFoundException;
 import com.hackaboss.agenciaTurismo.model.Client;
 import com.hackaboss.agenciaTurismo.model.Flight;
@@ -104,28 +103,29 @@ public class FlightServiceTest {
 
         String origin = "Origin Test";
         String destination = "Destination Test";
-        LocalDate date = LocalDate.of(2023, 1, 1);
+        LocalDate dateFrom = LocalDate.of(2023, 1, 1);
+        LocalDate dateTo = LocalDate.of(2023, 1, 20);
 
         Flight flight1 = new Flight();
         flight1.setFlightCode("FC1");
         flight1.setOrigin(origin);
         flight1.setDestination(destination);
-        flight1.setDate(date);
+        flight1.setDate(dateFrom);
         flight1.setAvailableSeats(100);
 
         Flight flight2 = new Flight();
         flight2.setFlightCode("FC2");
         flight2.setOrigin(origin);
         flight2.setDestination(destination);
-        flight2.setDate(date);
+        flight2.setDate(dateTo);
         flight2.setAvailableSeats(200);
 
         List<Flight> flights = Arrays.asList(flight1, flight2);
 
 
-        when(flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(origin, destination, date)).thenReturn(flights);
+        when(flightRepository.findByOriginAndDestinationAndDates(origin, destination, dateTo, dateFrom)).thenReturn(flights);
 
-        List<FlightDTO> flightDTOs = flightServiceInyectado.getFlightByDestinationOriginAndDate(destination, origin, date);
+        List<FlightDTO> flightDTOs = flightServiceInyectado.getFlightByDestinationOriginAndDate(destination, origin, dateTo, dateFrom);
 
         assertEquals(flights.size(), flightDTOs.size());
         for (int i = 0; i < flights.size(); i++) {
@@ -144,15 +144,16 @@ public class FlightServiceTest {
 
         String origin = "Origin Test";
         String destination = "Destination Test";
-        LocalDate date = LocalDate.of(2023, 1, 1);
+        LocalDate dateFrom = LocalDate.of(2023, 1, 1);
+        LocalDate dateTo = LocalDate.of(2023, 1, 20);
 
         List<Flight> flights = new ArrayList<>();
 
 
-        when(flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(origin, destination, date)).thenReturn(flights);
+        when(flightRepository.findByOriginAndDestinationAndDates(origin, destination, dateTo, dateFrom)).thenReturn(flights);
 
         assertThrows(FlightNotFoundException.class, () -> {
-            flightServiceInyectado.getFlightByDestinationOriginAndDate(destination, origin, date);
+            flightServiceInyectado.getFlightByDestinationOriginAndDate(destination, origin, dateTo, dateFrom);
         });
     }
 

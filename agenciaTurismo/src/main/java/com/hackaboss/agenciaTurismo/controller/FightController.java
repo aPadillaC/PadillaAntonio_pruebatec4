@@ -84,10 +84,14 @@ public class FightController {
                                                                @RequestParam("origin") String origin,
                                                                @DateTimeFormat(
                                                                        iso = DateTimeFormat.ISO.DATE,
-                                                                       fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
-                                                                   @RequestParam("date") LocalDate date){
+                                                                       fallbackPatterns = {"yyyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+                                                                   @RequestParam("dateTo") LocalDate dateTo,
+                                                                @DateTimeFormat(
+                                                                        iso = DateTimeFormat.ISO.DATE,
+                                                                        fallbackPatterns = {"yyyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+                                                                    @RequestParam("dateFrom") LocalDate dateFrom){
 
-        return ResponseEntity.status(HttpStatus.OK).body(flightService.getFlightByDestinationOriginAndDate(destination, origin, date));
+        return ResponseEntity.status(HttpStatus.OK).body(flightService.getFlightByDestinationOriginAndDate(destination, origin, dateTo, dateFrom));
     }
 
 

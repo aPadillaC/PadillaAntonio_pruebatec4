@@ -144,10 +144,16 @@
 	<br> 
 	<li><b>FlightBooking:</b> La entidad FlightBooking representa una reserva de vuelo. Cada reserva de vuelo tiene un ID único, un código de reserva, un tipo de asiento, un precio de asiento y está asociada a un vuelo y a una lista de clientes (Relación ManyToMany con Client). El código de reserva se genera a partir del código de vuelo y un número. </li>
 	<br> 
-	<li><b>Client:</b> La entidad Client representa un cliente en la aplicación. Cada cliente tiene un ID único, un nombre, un apellido, un NIF, un correo electrónico y listas de reservas de habitaciones (Relación OneToMany) y vuelos (Relación ManyToManu). </li>
+	<li><b>Client:</b> La entidad Client representa un cliente en la aplicación. Cada cliente tiene un ID único, un nombre, un apellido, un NIF, un correo electrónico y listas de reservas de habitaciones (Relación OneToMany) y vuelos (Relación ManyToMany). </li>
 
 </ul>
 
+
+<!-- Uso de Swagger -->
+
+<h2>Uso de Swagger</h2>
+
+<p>Para ver la documentación de la API en Swagger hay que acceder a la url <a>http://localhost:8080/swagger-ui.html</a>. Para las rutas protegidas con la autenticación es necesario validarse, para ello en el archivo applicatio.properties aparece un usuario y contraseña por defecto.</p>
 
 
 <!-- SUPUESTOS -->
@@ -156,7 +162,7 @@
 <ul dir="auto">
 	<li> No se ha considerado necesario implantar un borrado/edicion de un cliente ya que según se interpreta en la consigna no se aprecia la necesidad al enfocarse esta principalmente en las entidades de reservas así como las de Hotel, Habitación y Vuelos.</li>
 	<br>
-	<li> Se ha implementado simplemente dos rutas Controller principales (FlightController y HotelRepository) por considerarse que por un lado Room y RoomBooking guarda estrecha relación con Hotel y ver más legible la ruta fija "/agency/hotels" para implementar todos los endPoint/métodos correspondientes a esas entidades. Y por otro lado FlightBooking y Flight en la ruta fija "/agency/flights/.</li>
+	<li> Se ha implementado simplemente dos rutas Controller principales (FlightController y HotelController) por considerarse que por un lado Room y RoomBooking guarda estrecha relación con Hotel y ver más legible la ruta fija "/agency/hotels" para implementar todos los endPoint/métodos correspondientes a esas entidades. Y por otro lado FlightBooking y Flight en la ruta fija "/agency/flights/.</li>
 	<br>
 	<li> Para la reserva de una habitación, se ha supuesto que solo aparezca como cliente la persona que reserva como tal y no los posibles acompañantes.</li>
 	<br>

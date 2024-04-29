@@ -13,8 +13,11 @@ import java.util.Optional;
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
     @Query("SELECT f FROM Flight f WHERE f.origin = :origin AND f.destination = :destination AND f.date = :date AND f.isDeleted = false")
-    List<Flight> findByOriginAndDestinationAndDateAndNotDeleted(String origin, String destination, LocalDate date);
+    List<Flight> findSimilarFlight(String origin, String destination, LocalDate date);
 
+    @Query("SELECT f FROM Flight f WHERE ((f.origin = :origin AND f.destination = :destination) OR " +
+            "(f.origin = :destination AND f.destination = :origin)) AND ((f.date = :dateFrom) OR (f.date = :dateTo)) AND f.isDeleted = false AND f.availableSeats > 0")
+    List<Flight> findByOriginAndDestinationAndDates(String origin, String destination, LocalDate dateTo, LocalDate dateFrom);
 
     @Query("SELECT f FROM Flight f WHERE f.isDeleted = false")
     List<Flight> findAllNotDeleted();

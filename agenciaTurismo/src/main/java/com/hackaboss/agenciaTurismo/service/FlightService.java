@@ -47,7 +47,7 @@ public class FlightService implements IFlightService{
     @Override
     public void addFlight(Flight flight) {
 
-        List<Flight> existingFlight = flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(flight.getOrigin(), flight.getDestination(), flight.getDate());
+        List<Flight> existingFlight = flightRepository.findSimilarFlight(flight.getOrigin(), flight.getDestination(), flight.getDate());
 
         if (!existingFlight.isEmpty()) {
 
@@ -284,9 +284,9 @@ public class FlightService implements IFlightService{
 
 
     @Override
-    public List<FlightDTO> getFlightByDestinationOriginAndDate(String destination, String origin, LocalDate date) {
+    public List<FlightDTO> getFlightByDestinationOriginAndDate(String destination, String origin, LocalDate dateTo, LocalDate dateFrom) {
 
-        List<Flight> flightList = flightRepository.findByOriginAndDestinationAndDateAndNotDeleted(origin, destination, date);
+        List<Flight> flightList = flightRepository.findByOriginAndDestinationAndDates(origin, destination, dateTo, dateFrom);
 
         if(flightList.isEmpty()) throw new FlightNotFoundException();
 

@@ -27,7 +27,7 @@ public interface IFlightService {
 
     void deleteFlightBooking(Integer flightBookingId);
 
-    List<FlightDTO> getFlightByDestinationOriginAndDate(String destination, String origin, LocalDate date);
+    List<FlightDTO> getFlightByDestinationOriginAndDate(String destination, String origin, LocalDate dateTo, LocalDate dateFrom);
 
     void addFlightList(List<Flight> flightList);
 }
