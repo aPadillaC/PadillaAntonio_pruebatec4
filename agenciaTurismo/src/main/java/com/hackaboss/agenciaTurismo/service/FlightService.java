@@ -19,15 +19,11 @@ public class FlightService implements IFlightService{
 
     private  FlightRepository flightRepository;
 
-
     private  ClientRepository clientRepository;
-
 
     private  FlightBookingRepository flightBookingRepository;
 
 
-
-    // Test constructor
 
     @Autowired
     public FlightService(FlightRepository flightRepository, ClientRepository clientRepository,
@@ -40,14 +36,13 @@ public class FlightService implements IFlightService{
 
 
 
-    //----------------
-
 
 
     @Override
     public void addFlight(Flight flight) {
 
-        List<Flight> existingFlight = flightRepository.findSimilarFlight(flight.getOrigin(), flight.getDestination(), flight.getDate());
+        List<Flight> existingFlight = flightRepository.findSimilarFlight(flight.getOrigin(), flight.getDestination(),
+                flight.getDate());
 
         if (!existingFlight.isEmpty()) {
 
@@ -171,60 +166,6 @@ public class FlightService implements IFlightService{
 
 
 
-    private List<Client> getClientsOfBooking(FlightBookingDTO flightBookingDTO) {
-
-        List<Client> clientList = new ArrayList<>();
-
-        List<ClientDTO> clientDTOList = flightBookingDTO.getClientList();
-
-        clientDTOList.forEach(clientDTO -> {
-
-            //Filter by dni and that is not deleted
-
-            Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
-
-            Client client = new Client();
-
-            if(existingClient == null) {
-
-                client.setName(clientDTO.getName());
-                client.setLastName(clientDTO.getLastName());
-                client.setNif(clientDTO.getNif());
-                client.setEmail(clientDTO.getEmail());
-
-                clientRepository.save(client);
-
-                clientList.add(client);
-            }
-
-            else if(existingClient.getName().equals(clientDTO.getName()) && existingClient.getLastName().equals(clientDTO.getLastName())){
-
-                clientList.add(existingClient);
-            }
-
-            else throw new ParameterConflictException("There is customer data that exists in the database but is wrong " +
-                        "in the request.");
-        });
-        return clientList;
-    }
-
-
-    private boolean isBookingExists(List<FlightBooking> flightExistBooking, FlightBooking flightBooking) {
-
-        Set<Client> flightBookingClientList = new HashSet<>(flightBooking.getClientList());
-
-        return flightExistBooking.stream()
-                .anyMatch(booking -> booking.getSeatType().equals(flightBooking.getSeatType()) &&
-                        booking.getSeatPrice().equals(flightBooking.getSeatPrice()) &&
-                        booking.getClientList().size() == flightBookingClientList.size() &&
-                        new HashSet<>(booking.getClientList()).containsAll(flightBookingClientList) &&
-                        booking.getFlight().equals(flightBooking.getFlight()));
-
-
-    }
-
-
-
 
     @Override
     public List<FlightBookingDTO> getFlightBookingForFlightById(Integer flightId) {
@@ -247,8 +188,10 @@ public class FlightService implements IFlightService{
         FlightBooking flightBooking = flightBookingRepository.findByIdAndNotDeleted(flightBookingId)
                 .orElseThrow( () -> new BookingNotFoundException("Flight booking not found"));
 
-        if(flightBookingDTO.getSeatType() != null && !flightBookingDTO.getSeatType().isBlank()) flightBooking.setSeatType(flightBookingDTO.getSeatType());
-        if(flightBookingDTO.getSeatPrice() != null && flightBookingDTO.getSeatPrice() > 0) flightBooking.setSeatPrice(flightBookingDTO.getSeatPrice());
+        if(flightBookingDTO.getSeatType() != null && !flightBookingDTO.getSeatType().isBlank())
+            flightBooking.setSeatType(flightBookingDTO.getSeatType());
+        if(flightBookingDTO.getSeatPrice() != null && flightBookingDTO.getSeatPrice() > 0)
+            flightBooking.setSeatPrice(flightBookingDTO.getSeatPrice());
 
         Flight flight = flightRepository.findFlightByIdAndNotDeleted(flightBooking.getFlight().getId())
                 .orElseThrow(FlightNotFoundException::new);
@@ -284,7 +227,8 @@ public class FlightService implements IFlightService{
 
 
     @Override
-    public List<FlightDTO> getFlightByDestinationOriginAndDate(String destination, String origin, LocalDate dateTo, LocalDate dateFrom) {
+    public List<FlightDTO> getFlightByDestinationOriginAndDate(String destination, String origin, LocalDate dateTo,
+                                                               LocalDate dateFrom) {
 
         List<Flight> flightList = flightRepository.findByOriginAndDestinationAndDates(origin, destination, dateTo, dateFrom);
 
@@ -307,16 +251,72 @@ public class FlightService implements IFlightService{
     }
 
 
+
+    private List<Client> getClientsOfBooking(FlightBookingDTO flightBookingDTO) {
+
+        List<Client> clientList = new ArrayList<>();
+
+        List<ClientDTO> clientDTOList = flightBookingDTO.getClientList();
+
+        clientDTOList.forEach(clientDTO -> {
+
+            //Filter by dni and that is not deleted
+
+            Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
+
+            Client client = new Client();
+
+            if(existingClient == null) {
+
+                client.setName(clientDTO.getName());
+                client.setLastName(clientDTO.getLastName());
+                client.setNif(clientDTO.getNif());
+                client.setEmail(clientDTO.getEmail());
+
+                clientRepository.save(client);
+
+                clientList.add(client);
+            }
+
+            else if(existingClient.getName().equals(clientDTO.getName()) && existingClient.getLastName().
+                    equals(clientDTO.getLastName())){
+
+                clientList.add(existingClient);
+            }
+
+            else throw new ParameterConflictException("There is customer data that exists in the database but is wrong " +
+                        "in the request.");
+        });
+        return clientList;
+    }
+
+
+
+    private boolean isBookingExists(List<FlightBooking> flightExistBooking, FlightBooking flightBooking) {
+
+        Set<Client> flightBookingClientList = new HashSet<>(flightBooking.getClientList());
+
+        return flightExistBooking.stream()
+                .anyMatch(booking -> booking.getSeatType().equals(flightBooking.getSeatType()) &&
+                        booking.getSeatPrice().equals(flightBooking.getSeatPrice()) &&
+                        booking.getClientList().size() == flightBookingClientList.size() &&
+                        new HashSet<>(booking.getClientList()).containsAll(flightBookingClientList) &&
+                        booking.getFlight().equals(flightBooking.getFlight()));
+
+
+    }
+
+
     FlightDTO toFlightDTO(Flight flight) {
 
-        return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
+        return new FlightDTO(flight.getId(), flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
                 flight.getAvailableSeats(), flight.getFlightBookingList().stream().map(this::toFlightBookingDTO).toList());
     }
 
 
     FlightDTO toGetFlightDTO(Flight flight) {
 
-        return new FlightDTO(flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
+        return new FlightDTO(flight.getId(), flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
                 flight.getAvailableSeats());
     }
 

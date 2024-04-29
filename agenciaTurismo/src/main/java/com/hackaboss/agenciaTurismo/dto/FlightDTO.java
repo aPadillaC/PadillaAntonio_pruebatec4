@@ -20,6 +20,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FlightDTO {
 
+    private Integer flightId;
+
     private String flightCode;
 
     @Size(min = 3, max = 40,
@@ -42,7 +44,8 @@ public class FlightDTO {
     @Valid
     private List<FlightBookingDTO> flightBookingList;
 
-    public FlightDTO(String flightCode, String origin, String destination, LocalDate date, Integer availableSeats) {
+    public FlightDTO(Integer flightId, String flightCode, String origin, String destination, LocalDate date, Integer availableSeats) {
+        this.flightId = flightId;
         this.flightCode = flightCode;
         this.origin = origin;
         this.destination = destination;

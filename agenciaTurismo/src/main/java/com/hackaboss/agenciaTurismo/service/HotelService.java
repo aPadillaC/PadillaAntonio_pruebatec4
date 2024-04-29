@@ -39,7 +39,6 @@ public class HotelService implements IHotelService{
     private static final String ENTITY_ROOM = "room";
     public static final String ENTITY_ROOM_BOOKING = "room booking";
 
-    // Test constructor
 
     public HotelService(HotelRepository hotelRepository, RoomBookingRepository roomBookingRepository,
                         RoomRepository roomRepository, ClientRepository clientRepository) {
@@ -50,7 +49,7 @@ public class HotelService implements IHotelService{
         this.roomBookingRepository = roomBookingRepository;
     }
 
-    //----------------
+
 
     @Override
     public void addHotel(Hotel hotel) {
@@ -63,6 +62,8 @@ public class HotelService implements IHotelService{
         hotelRepository.save(hotel);
 
     }
+
+
 
     @Override
     public List<HotelDTO> getHotels() {
@@ -79,6 +80,7 @@ public class HotelService implements IHotelService{
                 .toList();
 
     }
+
 
 
     @Override
@@ -143,6 +145,7 @@ public class HotelService implements IHotelService{
     }
 
 
+
     @Override
     public RoomDTO getRoomById(Integer hotelId, Integer roomId) {
 
@@ -158,6 +161,8 @@ public class HotelService implements IHotelService{
         return toRoomDTO(room);
 
     }
+
+
 
     @Override
     public void deleteHotel(Integer hotelId) {
@@ -176,6 +181,7 @@ public class HotelService implements IHotelService{
 
             hotelRepository.save(hotel);
     }
+
 
 
     @Override
@@ -224,10 +230,6 @@ public class HotelService implements IHotelService{
 
 
 
-
-
-
-
     @Override
     public Double addRoomBooking(Integer roomId, RoomBookingDTO roomBookingDTO) {
 
@@ -236,39 +238,9 @@ public class HotelService implements IHotelService{
 
         if(room.isBooked()) throw new ParameterConflictException("Room is already booked for all days.");
 
-        boolean bookingExist = isBookingExist(room, roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
+        validateBookingDates(room, roomBookingDTO);
 
-        if(roomBookingDTO.getDateFrom().isBefore(room.getDateFrom()) || roomBookingDTO.getDateTo().isAfter(room.getDateTo())) {
-
-            throw new ParameterConflictException("Booking dates must be within room availability dates.");
-        }
-
-        if (bookingExist) throw new AlreadyExistEntityException(ENTITY_ROOM_BOOKING);
-
-        ClientDTO clientDTO = roomBookingDTO.getClient();
-
-        Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
-
-        Client client = new Client();
-
-        if(existingClient == null) {
-
-            client.setName(clientDTO.getName());
-            client.setLastName(clientDTO.getLastName());
-            client.setNif(clientDTO.getNif());
-            client.setEmail(clientDTO.getEmail());
-
-            clientRepository.save(client);
-        }
-
-        else if(existingClient.getName().equals(clientDTO.getName()) &&
-                existingClient.getLastName().equals(clientDTO.getLastName())){
-
-            client = existingClient;
-        }
-
-        else throw new ParameterConflictException("There is customer data that exists in the database but is wrong " +
-                    "in the request.");
+        Client client = getClient(roomBookingDTO.getClient());
 
         RoomBooking roomBooking = new RoomBooking();
 
@@ -288,29 +260,13 @@ public class HotelService implements IHotelService{
 
         roomRepository.save(room);
 
-        return room.getRoomPrice() * ChronoUnit.DAYS.between(roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
-
-    }
-
-
-    private boolean isBookingExist(Room room, LocalDate dateFrom, LocalDate dateTo) {
-
-        List<RoomBooking> bookings = roomBookingRepository.findBookingsInDateRange(room.getId(), dateFrom, dateTo);
-
-        return !bookings.isEmpty();
+        return calculateTotalPrice(roomBooking);
 
     }
 
 
 
-    private boolean isRoomBookedEveryday(Integer roomId, LocalDate dateFrom, LocalDate dateTo) {
-        List<RoomBooking> bookings = roomBookingRepository.findBookingsForRoomId(roomId);
-        long totalDays = ChronoUnit.DAYS.between(dateFrom, dateTo) + 1; // +1 to include both start and end date
-        long bookedDays = bookings.stream()
-                .mapToLong(booking -> ChronoUnit.DAYS.between(booking.getDateFrom(), booking.getDateTo()) + 1)
-                .sum();
-        return bookedDays >= totalDays;
-    }
+
 
 
     @Override
@@ -445,11 +401,91 @@ public class HotelService implements IHotelService{
 
 
 
+    private Client getClient(ClientDTO clientDTO) {
+
+        Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
+
+        if(existingClient == null) {
+
+            Client client = new Client();
+
+            client.setName(clientDTO.getName());
+            client.setLastName(clientDTO.getLastName());
+            client.setNif(clientDTO.getNif());
+            client.setEmail(clientDTO.getEmail());
+
+            clientRepository.save(client);
+
+            return client;
+        }
+
+        else if(existingClient.getName().equals(clientDTO.getName()) &&
+                existingClient.getLastName().equals(clientDTO.getLastName())){
+
+            return existingClient;
+        }
+
+        else throw new ParameterConflictException("There is customer data that exists in the database but is wrong " +
+                    "in the request.");
+    }
+
+
+
+    private Double calculateTotalPrice(RoomBooking roomBooking) {
+        long days = ChronoUnit.DAYS.between(roomBooking.getDateFrom(), roomBooking.getDateTo());
+        return days * roomBooking.getRoom().getRoomPrice();
+    }
+
+
+
+    private void validateBookingDates(Room room, RoomBookingDTO roomBookingDTO) {
+
+        if(roomBookingDTO.getDateFrom().isBefore(room.getDateFrom()) || roomBookingDTO.getDateTo().isAfter(room.getDateTo())) {
+
+            throw new ParameterConflictException("Booking dates must be within room availability dates.");
+        }
+
+        boolean bookingExist = isBookingExist(room, roomBookingDTO.getDateFrom(), roomBookingDTO.getDateTo());
+
+        if (bookingExist) {
+
+            throw new AlreadyExistEntityException(ENTITY_ROOM_BOOKING);
+        }
+    }
+
+
+
+    private boolean isBookingExist(Room room, LocalDate dateFrom, LocalDate dateTo) {
+
+        List<RoomBooking> bookings = roomBookingRepository.findBookingsInDateRange(room.getId(), dateFrom, dateTo);
+
+        return !bookings.isEmpty();
+
+    }
+
+
+
+    private boolean isRoomBookedEveryday(Integer roomId, LocalDate dateFrom, LocalDate dateTo) {
+
+        List<RoomBooking> bookings = roomBookingRepository.findBookingsForRoomId(roomId);
+
+        long totalDays = ChronoUnit.DAYS.between(dateFrom, dateTo) + 1; // +1 to include both start and end date
+
+        long bookedDays = bookings.stream()
+                .mapToLong(booking -> ChronoUnit.DAYS.between(booking.getDateFrom(), booking.getDateTo()) + 1)
+                .sum();
+
+        return bookedDays >= totalDays;
+    }
+
+
+
     RoomDTO toRoomDTO(Room room){
 
         return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(),
                 room.getDateTo(), room.getRoomBookingList().stream().map(this::toRoomBookingDTO).toList());
     }
+
 
 
     RoomDTO toGetRoomDTO(Room room){
@@ -459,11 +495,13 @@ public class HotelService implements IHotelService{
     }
 
 
+
     HotelDTO toHotelDTO(Hotel hotel){
 
         return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode(),
                 hotel.getRooms().stream().map(this::toRoomDTO).toList());
     }
+
 
 
     HotelDTO toGetHotelDTO(Hotel hotel){
@@ -472,12 +510,14 @@ public class HotelService implements IHotelService{
     }
 
 
+
     RoomBookingDTO toRoomBookingDTO(RoomBooking roomBooking){
 
         return new RoomBookingDTO(roomBooking.getBookingCode(), roomBooking.getDateFrom(), roomBooking.getDateTo(),
                 roomBooking.getRoom().getHotel().getCity(), roomBooking.getRoom().getHotel().getName(),
                 roomBooking.getRoom().getRoomCode(), roomBooking.getRoom().getRoomType(), toClientDTO(roomBooking.getClient()));
     }
+
 
 
     ClientDTO toClientDTO(Client client){
