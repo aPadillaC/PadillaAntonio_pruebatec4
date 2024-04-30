@@ -162,7 +162,7 @@
 <ul dir="auto">
 	<li> No se ha considerado necesario implantar un borrado/edicion de un cliente ya que según se interpreta en la consigna no se aprecia la necesidad al enfocarse esta principalmente en las entidades de reservas así como las de Hotel, Habitación y Vuelos.</li>
 	<br>
-	<li> Se ha implementado simplemente dos rutas Controller principales (FlightController y HotelController) por considerarse que por un lado Room y RoomBooking guarda estrecha relación con Hotel y ver más legible la ruta fija "/agency/hotels" para implementar todos los endPoint/métodos correspondientes a esas entidades. Y por otro lado FlightBooking y Flight en la ruta fija "/agency/flights/.</li>
+	<li> Se ha implementado dos rutas Controller principales (FlightController y HotelController) por considerarse que por un lado Room y RoomBooking guarda estrecha relación con Hotel y ver más legible la ruta fija "/agency/hotels" para implementar todos los endPoint/métodos correspondientes a esas entidades. Y por otro lado FlightBooking y Flight en la ruta fija "/agency/flights/.</li>
 	<br>
 	<li> Para la reserva de una habitación, se ha supuesto que solo aparezca como cliente la persona que reserva como tal y no los posibles acompañantes.</li>
 	<br>

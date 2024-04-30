@@ -51,8 +51,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     /**
      * Method to authenticate into the Spring flow
-     *
-     * @param claims
      */
     private void setUpSpringAuthentication(Claims claims) {
 

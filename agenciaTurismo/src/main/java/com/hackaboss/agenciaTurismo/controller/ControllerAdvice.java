@@ -24,7 +24,9 @@ public class ControllerAdvice {
 
 
 
-    // Exception handler for method argument not valid exceptions
+    /**
+     * Handle validation exceptions
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(
             MethodArgumentNotValidException e) {
@@ -43,7 +45,6 @@ public class ControllerAdvice {
 
 
 
-    // Exception handler for validation exceptions
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<Object> handleHandlerMethodValidationException(HandlerMethodValidationException e) {
 
@@ -62,7 +63,7 @@ public class ControllerAdvice {
 
 
 
-    // Exception handler for various exceptions
+
     @ExceptionHandler(ParameterConflictException.class)
     public ResponseEntity<Object> notValidParamException(RuntimeException ex) {
 

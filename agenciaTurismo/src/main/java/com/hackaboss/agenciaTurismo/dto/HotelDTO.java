@@ -31,7 +31,9 @@ public class HotelDTO {
     @Valid
     private List<RoomDTO> rooms;
 
-    // Get one hotel
+    /**
+     * Constructor for get one hotel
+     */
     public HotelDTO(Integer id, String name, String city, String hotelCode) {
         this.id = id;
         this.name = name;

@@ -45,7 +45,9 @@ public class RoomBookingDTO {
     private ClientDTO client;
 
 
-    // Constructor for get room-Booking
+    /**
+     * Constructor for get room-Booking
+     */
     public RoomBookingDTO(String bookingCode, LocalDate dateFrom, LocalDate dateTo, String city, String hotelName, String roomCode, String roomType, ClientDTO client) {
         this.bookingCode = bookingCode;
         this.dateFrom = dateFrom;
@@ -59,7 +61,9 @@ public class RoomBookingDTO {
 
 
 
-    // Constructor for add room-Booking
+    /**
+     * Constructor for add room-Booking
+     */
     public RoomBookingDTO(LocalDate dateFrom, LocalDate dateTo, ClientDTO client) {
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
@@ -67,7 +71,10 @@ public class RoomBookingDTO {
     }
 
 
-    // Constructor for Update room-Booking
+
+    /**
+     * Constructor for update room-Booking
+     */
     public RoomBookingDTO(LocalDate dateFrom, LocalDate dateTo) {
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;

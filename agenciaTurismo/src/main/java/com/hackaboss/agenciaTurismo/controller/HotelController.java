@@ -27,7 +27,9 @@ public class HotelController {
 
 
 
-    // 1. Add hotel
+    /**
+     * 1. Add hotel
+     */
     @PostMapping("/new")
     public ResponseEntity<String> addHotel(@Valid @RequestBody Hotel hotel){
 
@@ -38,7 +40,9 @@ public class HotelController {
 
 
 
-    // 2. Get hotels
+    /**
+     * 2. Get hotels
+     */
     @GetMapping
     public ResponseEntity<List<HotelDTO>> getHotels(){
 
@@ -47,7 +51,9 @@ public class HotelController {
 
 
 
-    // 3. Find hotel by id
+    /**
+     * 3. Find hotel by id
+     */
     @GetMapping("/{hotelId}")
     public ResponseEntity<HotelDTO> getHotelById(@Positive @NotNull @PathVariable Integer hotelId){
 
@@ -56,7 +62,9 @@ public class HotelController {
 
 
 
-    // 4. Add room
+    /**
+     * 4. Add room
+     */
     @PostMapping("/{hotelId}/rooms/new")
     public ResponseEntity<String> addRoom(@Positive @NotNull @PathVariable Integer hotelId, @Valid @RequestBody Room room){
 
@@ -67,7 +75,9 @@ public class HotelController {
 
 
 
-    // 5. Update hotel
+    /**
+     * 5. Update hotel
+     */
     @PutMapping("/edit/{hotelId}")
     public ResponseEntity<String> updateHotel(@Positive @NotNull @PathVariable Integer hotelId, @Valid @RequestBody Hotel hotel){
 
@@ -78,7 +88,9 @@ public class HotelController {
 
 
 
-    // 6. Update room
+    /**
+     * 6. Update room
+     */
     @PutMapping("/{hotelId}/rooms/edit/{roomId}")
     public ResponseEntity<String> updateRoom(@Positive @NotNull @PathVariable Integer hotelId,
                              @Positive @PathVariable Integer roomId,
@@ -91,7 +103,9 @@ public class HotelController {
 
 
 
-    // 7. Get rooms by hotel id
+    /**
+     * 7. Get rooms by hotel id
+     */
     @GetMapping("/{hotelId}/rooms/{roomId}")
     public ResponseEntity<RoomDTO> getRoomById(@Positive @NotNull @PathVariable Integer hotelId,
                                @Positive @NotNull @PathVariable Integer roomId){
@@ -101,7 +115,9 @@ public class HotelController {
 
 
 
-    // 8. Delete hotel
+    /**
+     * 8. Delete hotel
+     */
     @DeleteMapping("/delete/{hotelId}")
     public ResponseEntity<String> deleteHotel(@Positive @NotNull @PathVariable Integer hotelId){
 
@@ -112,7 +128,9 @@ public class HotelController {
 
 
 
-    // 9. Delete room
+    /**
+     * 9. Delete room
+     */
     @DeleteMapping("/{hotelId}/rooms/delete/{roomId}")
     public ResponseEntity<String> deleteRoom(@Positive @NotNull @PathVariable Integer hotelId,
                              @Positive @NotNull @PathVariable Integer roomId){
@@ -123,7 +141,9 @@ public class HotelController {
 
 
 
-    // 10. Find rooms by conditions
+    /**
+     * 10. Find rooms by city and date
+     */
     @GetMapping("/rooms")
     public ResponseEntity<List<RoomDTO>> getRoomsByCityAndDate(@RequestParam("city") String city,
                                                @DateTimeFormat(
@@ -140,7 +160,9 @@ public class HotelController {
 
 
 
-    // 11. Add room-booking
+    /**
+     * 11. Add room booking
+     */
     @PostMapping("/{roomId}/rooms-booking/new")
     public ResponseEntity<String> addRoomBooking(@Positive @NotNull @PathVariable Integer roomId,
                                  @Valid @RequestBody RoomBookingDTO roomBookingDTO){
@@ -152,7 +174,9 @@ public class HotelController {
 
 
 
-    // 12. Get room-bookings
+    /**
+     * 12. Get all room bookings
+     */
     @GetMapping("/rooms-booking")
     public ResponseEntity<List<RoomBookingDTO>> getRoomBookings(){
 
@@ -161,7 +185,9 @@ public class HotelController {
 
 
 
-    // 13. Delete room-booking
+    /**
+     * 13. Delete room booking
+     */
     @DeleteMapping("/rooms-booking/delete/{roomBookingId}")
     public ResponseEntity<String> deleteRoomBooking(@Positive @NotNull @PathVariable Integer roomBookingId){
 
@@ -172,7 +198,9 @@ public class HotelController {
 
 
 
-    // 14. Update room-booking
+    /**
+     * 14. Update room booking
+     */
     @PutMapping("/rooms-booking/edit/{roomBookingId}")
     public ResponseEntity<String> updateRoomBooking(@Positive @NotNull @PathVariable Integer roomBookingId,
                                     @Valid @RequestBody RoomBookingDTO roomBookingDTO){
@@ -184,7 +212,9 @@ public class HotelController {
 
 
 
-    // 15. Complete room-booking
+    /**
+     * 15. Complete room booking
+     */
     @PutMapping("/rooms-booking/complete/{roomBookingId}")
     public ResponseEntity<String> completeRoomBooking(@Positive @NotNull @PathVariable Integer roomBookingId){
 
@@ -195,7 +225,9 @@ public class HotelController {
 
 
 
-    // 16. Add hotelList
+    /**
+     * 16. Add a list of hotels
+     */
     @PostMapping("/new-list")
     public ResponseEntity<String> addHotelList(@Valid @RequestBody List<Hotel> hotelList){
 
@@ -206,7 +238,9 @@ public class HotelController {
 
 
 
-    // 17. Add roomList
+    /**
+     * 17. Add a list of rooms to a hotel
+     */
     @PostMapping("/{hotelId}/rooms/new-list")
     public ResponseEntity<String> addRoomList(@Positive @NotNull @PathVariable Integer hotelId,
                               @Valid @RequestBody List<Room> roomList){
@@ -218,7 +252,9 @@ public class HotelController {
 
 
 
-    // 18. Get room-bookings by hotel id
+    /**
+     * 18. Get room bookings by hotel id
+     */
     @GetMapping("/{hotelId}/rooms-booking")
     public ResponseEntity<List<RoomBookingDTO>> getRoomBookingsByHotelId(@Positive @NotNull @PathVariable Integer hotelId){
 

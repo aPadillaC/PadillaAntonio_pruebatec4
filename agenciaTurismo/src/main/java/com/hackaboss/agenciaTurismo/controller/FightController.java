@@ -27,7 +27,9 @@ public class FightController {
 
 
 
-    // 1. Add flight
+    /**
+     * 1. Add flight
+     **/
     @PostMapping("/new")
     public ResponseEntity<String> addFlight(@Valid @RequestBody Flight flight){
 
@@ -39,6 +41,10 @@ public class FightController {
 
 
     // 2. Get flights
+
+    /**
+     * 2. Get flights
+     */
     @GetMapping
     public ResponseEntity<List<FlightDTO>> getFlights(){
 
@@ -47,7 +53,9 @@ public class FightController {
 
 
 
-    // 3. Find flight by id
+    /**
+     * 3. Find flight by id
+     */
     @GetMapping("/{flightId}")
     public ResponseEntity<FlightDTO> getFlightById(@Positive @NotNull @PathVariable Integer flightId){
 
@@ -56,7 +64,9 @@ public class FightController {
 
 
 
-    // 4. Update flight
+    /**
+     * 4. Update flight
+     */
     @PutMapping("/edit/{flightId}")
     public ResponseEntity<String> updateFlight(@Positive @NotNull @PathVariable Integer flightId, @Valid @RequestBody Flight flight){
 
@@ -67,7 +77,9 @@ public class FightController {
 
 
 
-    //5. Delete flight
+    /**
+     * 5. Delete flight
+     */
     @DeleteMapping("/delete/{flightId}")
     public ResponseEntity<String> deleteFlight(@Positive @NotNull @PathVariable Integer flightId){
 
@@ -78,7 +90,9 @@ public class FightController {
 
 
 
-    //6. Get flight by destination, origin and date
+    /**
+     * 6. Get flight by destination, origin and date
+     */
     @GetMapping("/search")
     public ResponseEntity<List<FlightDTO>> getFlightByDestinationOriginAndDate(@RequestParam("destination") String destination,
                                                                @RequestParam("origin") String origin,
@@ -96,7 +110,9 @@ public class FightController {
 
 
 
-    //7. Add flight-booking
+    /**
+     * 7. Add flight-booking
+     */
     @PostMapping("/{flightId}/flight-booking/new")
     public ResponseEntity<String> addFlightBooking(@Positive @NotNull @PathVariable Integer flightId, @Valid @RequestBody FlightBookingDTO flightBookingDTO){
 
@@ -107,7 +123,9 @@ public class FightController {
 
 
 
-    //8. Get flight-booking by id
+    /**
+     * 8. Get flight-booking by id
+     */
     @GetMapping("/{flightId}/flight-booking")
     public ResponseEntity<List<FlightBookingDTO>> getFlightBookingForFlightById(@Positive @NotNull @PathVariable Integer flightId){
 
@@ -116,7 +134,9 @@ public class FightController {
 
 
 
-    //9. Update flight-booking
+    /**
+     * 9. Update flight-booking
+     */
     @PutMapping("/flight-booking/edit/{flightBookingId}")
     public ResponseEntity<String> updateFlightBooking(@Positive @NotNull @PathVariable Integer flightBookingId, @Valid @RequestBody FlightBookingDTO flightBookingDTO){
 
@@ -127,7 +147,9 @@ public class FightController {
 
 
 
-    //10. Delete flight-booking
+    /**
+     * 10. Delete flight-booking
+     */
     @DeleteMapping("/flight-booking/delete/{flightBookingId}")
     public ResponseEntity<String> deleteFlightBooking(@Positive @NotNull @PathVariable Integer flightBookingId){
 
@@ -138,7 +160,9 @@ public class FightController {
 
 
 
-    //11. Add flightList
+    /**
+     * 11. Add flightList
+     */
     @PostMapping("/newList")
     public ResponseEntity<String> addFlightList(@Valid @RequestBody List<Flight> flightList){
 

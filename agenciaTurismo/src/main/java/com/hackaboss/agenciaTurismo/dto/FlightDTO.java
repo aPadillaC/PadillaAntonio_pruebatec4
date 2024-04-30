@@ -44,6 +44,11 @@ public class FlightDTO {
     @Valid
     private List<FlightBookingDTO> flightBookingList;
 
+
+
+    /**
+     * Constructor for get flight
+     */
     public FlightDTO(Integer flightId, String flightCode, String origin, String destination, LocalDate date, Integer availableSeats) {
         this.flightId = flightId;
         this.flightCode = flightCode;

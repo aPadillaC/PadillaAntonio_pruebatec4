@@ -79,6 +79,7 @@ public class FlightService implements IFlightService{
 
 
 
+
     @Override
     public void updateFlight(Integer flightId, Flight flight) {
 
@@ -307,6 +308,10 @@ public class FlightService implements IFlightService{
     }
 
 
+
+    /**
+     * Method to convert a Flight object to a FlightDTO object
+     */
     FlightDTO toFlightDTO(Flight flight) {
 
         return new FlightDTO(flight.getId(), flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
@@ -314,6 +319,9 @@ public class FlightService implements IFlightService{
     }
 
 
+    /**
+     * Method to convert a Flight object to a FlightDTO object
+     */
     FlightDTO toGetFlightDTO(Flight flight) {
 
         return new FlightDTO(flight.getId(), flight.getFlightCode(), flight.getOrigin(), flight.getDestination(), flight.getDate(),
@@ -321,6 +329,9 @@ public class FlightService implements IFlightService{
     }
 
 
+    /**
+     * Method to convert a FlightBooking object to a FlightBookingDTO object
+     */
     FlightBookingDTO toFlightBookingDTO(FlightBooking flightBooking) {
 
         return new FlightBookingDTO(flightBooking.getBookingCode(), flightBooking.getFlight().getDate(),
@@ -329,6 +340,9 @@ public class FlightService implements IFlightService{
     }
 
 
+    /**
+     * Method to convert a Client object to a ClientDTO object
+     */
     ClientDTO toClientDTO(Client client){
 
         return new ClientDTO(client.getName(), client.getLastName(), client.getNif(), client.getEmail());
