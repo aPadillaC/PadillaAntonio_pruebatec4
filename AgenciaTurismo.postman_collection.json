@@ -1,0 +1,856 @@
+{
+	"info": {
+		"_postman_id": "6109e11a-6e7f-494a-b437-0280dacb1f5c",
+		"name": "AgenciaTurismo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26943304"
+	},
+	"item": [
+		{
+			"name": "Hotel",
+			"item": [
+				{
+					"name": "NuevoHotel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhUGFkaWxsYUpXVCIsInN1YiI6IkFudG9uaW8iLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzE0MzQ1ODYwLCJleHAiOjE3MTQzNDYwNDB9.Hz9JGJ8IoWHJGxN7FIRtgPxNL2-OZdt1GJibGMWzNJYpElHdpZ6q2eTnWoaqmKBnNG_iROcT8RLr-JcL0lVjCQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Larios\",\r\n    \"city\": \"Malaga\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VerHoteles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhUGFkaWxsYUpXVCIsInN1YiI6ImFudG9uaW8iLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzE0MjE5MjEwLCJleHAiOjE3MTQyMTkzOTB9.6AbF-7PEmOrePS1tmg5sj5wjNg1Y2A7Pw5ezJHstpGPpaXR7M8FVG4wbsJqVJQdNggxFBiT5n1Ji4MfL9Mz7Bg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hotel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditarHotel",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhUGFkaWxsYUpXVCIsInN1YiI6IkFudG9uaW8iLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzE0MzQ1ODYwLCJleHAiOjE3MTQzNDYwNDB9.Hz9JGJ8IoWHJGxN7FIRtgPxNL2-OZdt1GJibGMWzNJYpElHdpZ6q2eTnWoaqmKBnNG_iROcT8RLr-JcL0lVjCQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Hotel Autentication\",\r\n    \"city\": \"Ciudad Autentication\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/edit/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"edit",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VerReservasHotel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/1/rooms-booking",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"1",
+								"rooms-booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EliminarHotelYHabitaciones",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NuevoListadoHoteles",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"name\": \"Hotel1\",\r\n    \"city\": \"City1\"\r\n  },\r\n  {\r\n    \"name\": \"Hotel2\",\r\n    \"city\": \"City2\"\r\n  },\r\n  {\r\n    \"name\": \"Hotel3\",\r\n    \"city\": \"City3\"\r\n  },\r\n  {\r\n    \"name\": \"Hotel4\",\r\n    \"city\": \"City4\"\r\n  },\r\n  {\r\n    \"name\": \"Hotel5\",\r\n    \"city\": \"City5\"\r\n  },\r\n  {\r\n    \"name\": \"Hotel6\",\r\n    \"city\": \"City6\"\r\n  },\r\n  {\r\n    \"name\": \"Hotel7\",\r\n    \"city\": \"City7\"\r\n  },\r\n  {\r\n    \"name\": \"Hotel8\",\r\n    \"city\": \"City8\"\r\n  },\r\n  {\r\n    \"name\": \"Hotel9\",\r\n    \"city\": \"City9\"\r\n  },\r\n  {\r\n    \"name\": \"Hotel10\",\r\n    \"city\": \"City10\"\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/new-list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"new-list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Habitacion",
+			"item": [
+				{
+					"name": "NuevaHabitacion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roomType\": \"Deluxe\",\r\n    \"roomPrice\": 2500,\r\n    \"dateFrom\": \"2024-05-31\",\r\n    \"dateTo\": \"2024-06-25\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/52/rooms/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"52",
+								"rooms",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditarHabitacion",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roomType\": \"Prueba\",\r\n    \"roomPrice\": 200.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/1/rooms/edit/302",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"1",
+								"rooms",
+								"edit",
+								"302"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Habitacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/1/rooms/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"1",
+								"rooms",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BuscarPorCiudadYFecha",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/rooms?city=City2&dateFrom=2024-05-01&dateTo=2024-06-30",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"rooms"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "City2"
+								},
+								{
+									"key": "dateFrom",
+									"value": "2024-05-01"
+								},
+								{
+									"key": "dateTo",
+									"value": "2024-06-30"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EliminarHabitacion",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/1/rooms/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"1",
+								"rooms",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NueloListadoHabitaciones",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"roomType\": \"Deluxe\",\r\n        \"roomPrice\": 2600,\r\n        \"dateFrom\": \"2024-07-01\",\r\n        \"dateTo\": \"2024-07-20\"\r\n    },\r\n    {\r\n        \"roomType\": \"Economy\",\r\n        \"roomPrice\": 900,\r\n        \"dateFrom\": \"2024-06-15\",\r\n        \"dateTo\": \"2024-06-30\"\r\n    },\r\n    {\r\n        \"roomType\": \"Deluxe\",\r\n        \"roomPrice\": 2900,\r\n        \"dateFrom\": \"2024-08-05\",\r\n        \"dateTo\": \"2024-08-20\"\r\n    }\r\n]\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/1/rooms/new-list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"1",
+								"rooms",
+								"new-list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vuelo",
+			"item": [
+				{
+					"name": "NuevoVuelo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"date\" : \"2024-05-05\",\r\n\"origin\" : \"Buenos Aires\",\r\n\"destination\" : \"Madrid\",\r\n\"availableSeats\": 50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VerVuelos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/flights",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vuelo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditarVuelo",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"origin\": \"Rosario\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/edit/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"edit",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EliminarVuelo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NuevoListadoVuelos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"date\": \"2024-05-05\",\r\n        \"origin\": \"Buenos Aires\",\r\n        \"destination\": \"Madrid\",\r\n        \"availableSeats\": 50\r\n    },\r\n    {\r\n        \"date\": \"2024-05-06\",\r\n        \"origin\": \"Madrid\",\r\n        \"destination\": \"Paris\",\r\n        \"availableSeats\": 40\r\n    },\r\n    {\r\n        \"date\": \"2024-05-07\",\r\n        \"origin\": \"Paris\",\r\n        \"destination\": \"London\",\r\n        \"availableSeats\": 55\r\n    },\r\n    {\r\n        \"date\": \"2024-05-08\",\r\n        \"origin\": \"London\",\r\n        \"destination\": \"New York\",\r\n        \"availableSeats\": 60\r\n    },\r\n    {\r\n        \"date\": \"2024-05-09\",\r\n        \"origin\": \"New York\",\r\n        \"destination\": \"Los Angeles\",\r\n        \"availableSeats\": 45\r\n    },\r\n    {\r\n        \"date\": \"2024-05-10\",\r\n        \"origin\": \"Los Angeles\",\r\n        \"destination\": \"Tokyo\",\r\n        \"availableSeats\": 30\r\n    },\r\n    {\r\n        \"date\": \"2024-05-11\",\r\n        \"origin\": \"Tokyo\",\r\n        \"destination\": \"Sydney\",\r\n        \"availableSeats\": 55\r\n    },\r\n    {\r\n        \"date\": \"2024-05-12\",\r\n        \"origin\": \"Sydney\",\r\n        \"destination\": \"Dubai\",\r\n        \"availableSeats\": 45\r\n    },\r\n    {\r\n        \"date\": \"2024-05-13\",\r\n        \"origin\": \"Dubai\",\r\n        \"destination\": \"Istanbul\",\r\n        \"availableSeats\": 50\r\n    },\r\n    {\r\n        \"date\": \"2024-05-14\",\r\n        \"origin\": \"Istanbul\",\r\n        \"destination\": \"Moscow\",\r\n        \"availableSeats\": 40\r\n    },\r\n    {\r\n        \"date\": \"2024-05-15\",\r\n        \"origin\": \"Moscow\",\r\n        \"destination\": \"Beijing\",\r\n        \"availableSeats\": 35\r\n    },\r\n    {\r\n        \"date\": \"2024-05-16\",\r\n        \"origin\": \"Beijing\",\r\n        \"destination\": \"Shanghai\",\r\n        \"availableSeats\": 45\r\n    },\r\n    {\r\n        \"date\": \"2024-05-17\",\r\n        \"origin\": \"Shanghai\",\r\n        \"destination\": \"Hong Kong\",\r\n        \"availableSeats\": 50\r\n    },\r\n    {\r\n        \"date\": \"2024-05-18\",\r\n        \"origin\": \"Hong Kong\",\r\n        \"destination\": \"Singapore\",\r\n        \"availableSeats\": 40\r\n    },\r\n    {\r\n        \"date\": \"2024-05-19\",\r\n        \"origin\": \"Singapore\",\r\n        \"destination\": \"Bangkok\",\r\n        \"availableSeats\": 55\r\n    },\r\n    {\r\n        \"date\": \"2024-05-20\",\r\n        \"origin\": \"Madrid\",\r\n        \"destination\": \"Buenos Aires\",\r\n        \"availableSeats\": 45\r\n    },\r\n    {\r\n        \"date\": \"2024-05-21\",\r\n        \"origin\": \"Paris\",\r\n        \"destination\": \"Madrid\",\r\n        \"availableSeats\": 55\r\n    },\r\n    {\r\n        \"date\": \"2024-05-22\",\r\n        \"origin\": \"London\",\r\n        \"destination\": \"Paris\",\r\n        \"availableSeats\": 50\r\n    },\r\n    {\r\n        \"date\": \"2024-05-23\",\r\n        \"origin\": \"New York\",\r\n        \"destination\": \"London\",\r\n        \"availableSeats\": 60\r\n    },\r\n    {\r\n        \"date\": \"2024-05-24\",\r\n        \"origin\": \"Los Angeles\",\r\n        \"destination\": \"New York\",\r\n        \"availableSeats\": 50\r\n    },\r\n    {\r\n        \"date\": \"2024-05-25\",\r\n        \"origin\": \"Tokyo\",\r\n        \"destination\": \"Los Angeles\",\r\n        \"availableSeats\": 40\r\n    },\r\n    {\r\n        \"date\": \"2024-05-26\",\r\n        \"origin\": \"Sydney\",\r\n        \"destination\": \"Tokyo\",\r\n        \"availableSeats\": 55\r\n    },\r\n    {\r\n        \"date\": \"2024-05-27\",\r\n        \"origin\": \"Dubai\",\r\n        \"destination\": \"Sydney\",\r\n        \"availableSeats\": 60\r\n    },\r\n    {\r\n        \"date\": \"2024-05-28\",\r\n        \"origin\": \"Istanbul\",\r\n        \"destination\": \"Dubai\",\r\n        \"availableSeats\": 50\r\n    },\r\n    {\r\n        \"date\": \"2024-05-29\",\r\n        \"origin\": \"Moscow\",\r\n        \"destination\": \"Istanbul\",\r\n        \"availableSeats\": 45\r\n    },\r\n    {\r\n        \"date\": \"2024-05-30\",\r\n        \"origin\": \"Beijing\",\r\n        \"destination\": \"Moscow\",\r\n        \"availableSeats\": 40\r\n    },\r\n    {\r\n        \"date\": \"2024-05-31\",\r\n        \"origin\": \"Shanghai\",\r\n        \"destination\": \"Beijing\",\r\n        \"availableSeats\": 35\r\n    },\r\n    {\r\n        \"date\": \"2024-06-01\",\r\n        \"origin\": \"Hong Kong\",\r\n        \"destination\": \"Shanghai\",\r\n        \"availableSeats\": 45\r\n    },\r\n    {\r\n        \"date\": \"2024-06-02\",\r\n        \"origin\": \"Singapore\",\r\n        \"destination\": \"Hong Kong\",\r\n        \"availableSeats\": 50\r\n    },\r\n    {\r\n        \"date\": \"2024-06-03\",\r\n        \"origin\": \"Bangkok\",\r\n        \"destination\": \"Singapore\",\r\n        \"availableSeats\": 40\r\n    }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/newList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"newList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VuelosPorOrigenDestinoYfecha",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/search?dateTo=2024-05-05&origin=Madrid&destination=Buenos Aires&dateFrom=2024-05-20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"search"
+							],
+							"query": [
+								{
+									"key": "dateTo",
+									"value": "2024-05-05"
+								},
+								{
+									"key": "origin",
+									"value": "Madrid"
+								},
+								{
+									"key": "destination",
+									"value": "Buenos Aires"
+								},
+								{
+									"key": "dateFrom",
+									"value": "2024-05-20"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ReservasHabitacion",
+			"item": [
+				{
+					"name": "CrearReservaHotel",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dateFrom\" : \"2024-08-10\",\r\n    \"dateTo\" : \"2024-08-15\",\r\n    \"client\": {\r\n        \"name\": \"Ale\",\r\n        \"lastName\": \"Vega\",\r\n        \"nif\": \"45600000T\",\r\n        \"email\": \"marta.gil@example.com\"\r\n    }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/28/rooms-booking/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"28",
+								"rooms-booking",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BorrarReservaHotel",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/rooms-booking/delete/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"rooms-booking",
+								"delete",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditarFechaReserva",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"dateFrom\" : \"2024-08-10\",\r\n\"dateTo\" : \"2024-08-20\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/rooms-booking/edit/552",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"rooms-booking",
+								"edit",
+								"552"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VerTotalReservas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/hotels/rooms-booking",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"hotels",
+								"rooms-booking"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ReservasVuelo",
+			"item": [
+				{
+					"name": "CrearReserva>Vuelo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"seatType\" : \"Economy\",\r\n    \"seatPrice\": 150,\r\n    \"clientList\" : [    \r\n        {\r\n            \"name\": \"Lucia\",\r\n            \"lastName\": \"Padilla\",\r\n            \"nif\": \"98765432Y\",\r\n            \"email\": \"antonio.padilla@example.com\"\r\n        },\r\n        {\r\n            \"name\": \"Carmen\",\r\n            \"lastName\": \"Muñoz\",\r\n            \"nif\": \"02345678J\",\r\n            \"email\": \"carmen.munoz@example.com\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/1/flight-booking/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"1",
+								"flight-booking",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VerReservasDeUnVuelo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/52/flight-booking",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"52",
+								"flight-booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditarAsientoReservaVuelo",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"seatType\" : \"Deluxe\",\r\n    \"seatPrice\": 24\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/flight-booking/edit/203",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"flight-booking",
+								"edit",
+								"203"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EliminarReserva",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/agency/flights/flight-booking/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"flights",
+								"flight-booking",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Autenticacion",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\": \"Antonio\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agency/admin/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agency",
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
