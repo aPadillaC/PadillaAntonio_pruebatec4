@@ -2,6 +2,7 @@ package com.hackaboss.agenciaTurismo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -26,18 +27,21 @@ public class Flight {
 
     @Size(min = 3, max = 40,
             message = "Origin must be 3 characters long")
+    @NotBlank(message = "Origin is required")
     private String origin;
 
     @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
+            message = "Destination must be 3 characters long")
+    @NotBlank(message = "Destination is required")
     private String destination;
 
     @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE,
-            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+            iso = DateTimeFormat.ISO.DATE)
+    @NotBlank(message = "Date is required")
     private LocalDate date;
 
     @Min(value = 0, message = "Available seats must be greater than 0")
+    @NotBlank(message = "Available seats is required")
     private Integer availableSeats;
 
     private boolean isDeleted;

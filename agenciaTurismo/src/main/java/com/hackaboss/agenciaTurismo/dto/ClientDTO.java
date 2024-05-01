@@ -1,12 +1,7 @@
 package com.hackaboss.agenciaTurismo.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 @Getter
 @Setter
@@ -14,20 +9,22 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ClientDTO {
 
-    @Size(min = 2, max = 40,
-            message = "Origin must be 3 characters long")
+
+    @NotBlank(message = "Name must be informed")
     private String name;
 
-    @Size(min = 2, max = 40,
-            message = "Origin must be 3 characters long")
+
+    @NotBlank(message = "Last name must be informed")
     private String lastName;
 
     @Pattern(regexp = "^\\d{8}[A-Za-z]$",
             message = "NIF must be 8 numbers followed by a letter")
+    @NotBlank(message = "NIF must be informed")
     private String nif;
 
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             message = "Email must be a valid email")
+    @NotBlank(message = "Email must be informed")
     private String email;
 
 }

@@ -3,6 +3,7 @@ package com.hackaboss.agenciaTurismo.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -24,22 +25,23 @@ public class RoomDTO {
 
     @Size(min = 3, max = 40,
             message = "Origin must be 3 characters long")
+    @NotBlank(message = "Room type must be informed")
     private String roomType;
 
-    @NotNull(message = "Room price must be informed")
     @Min(value = 0, message = "Room price must be greater than 0")
+    @NotBlank(message = "Room price must be informed")
     private Double roomPrice;
 
     private String roomCode;
 
     @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE,
-            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+            iso = DateTimeFormat.ISO.DATE)
+    @NotBlank(message = "Date from must be informed")
     private LocalDate dateFrom;
 
     @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE,
-            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+            iso = DateTimeFormat.ISO.DATE)
+    @NotBlank(message = "Date to must be informed")
     private LocalDate dateTo;
 
     @Valid

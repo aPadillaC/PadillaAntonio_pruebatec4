@@ -2,6 +2,7 @@ package com.hackaboss.agenciaTurismo.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -22,26 +23,22 @@ public class FlightBookingDTO {
     private String bookingCode;
 
     @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE,
-            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+            iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
 
-    @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
     private String origin;
 
-    @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
     private String destination;
 
     @Min(value = 0, message = "People quantity must be greater than 0")
     private Integer peopleQ;
 
     @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
+            message = "Seat type must be 3 characters long")
+    @NotBlank(message = "Seat type is required")
     private String seatType;
 
-    @NotNull(message = "Seat price must be informed")
+    @NotNull(message = "Seat price is required")
     @Min(value = 0, message = "Seat price must be greater than 0")
     private Double seatPrice;
 

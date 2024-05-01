@@ -2,6 +2,7 @@ package com.hackaboss.agenciaTurismo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class FlightBooking {
     private String bookingCode;
 
     @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
+            message = "Seat type must be 3 characters long")
     private String seatType;
 
     @NotNull(message = "Seat price must be informed")

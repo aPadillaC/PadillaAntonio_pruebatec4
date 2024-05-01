@@ -1,6 +1,8 @@
 package com.hackaboss.agenciaTurismo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,11 +22,13 @@ public class Hotel {
     private Integer id;
 
     @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
+            message = "Name must be 3 characters long")
+    @NotBlank(message = "Name is required")
     private String name;
 
     @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
+            message = "City must be 3 characters long")
+    @NotBlank(message = "City is required")
     private String city;
 
     private boolean isDeleted;

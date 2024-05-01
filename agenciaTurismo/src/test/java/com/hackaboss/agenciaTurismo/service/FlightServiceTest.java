@@ -46,6 +46,7 @@ public class FlightServiceTest {
 
     @BeforeEach
     public void initMocks() {
+
         MockitoAnnotations.openMocks(this);
     }
 

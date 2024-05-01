@@ -1,6 +1,8 @@
 package com.hackaboss.agenciaTurismo.dto;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,27 +20,21 @@ public class RoomBookingDTO {
     private String bookingCode;
 
     @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE,
-            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+            iso = DateTimeFormat.ISO.DATE)
+    @NotNull(message = "DateFrom is required")
     private LocalDate dateFrom;
 
     @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE,
-            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+            iso = DateTimeFormat.ISO.DATE)
+    @NotNull(message = "DateTo is required")
     private LocalDate dateTo;
 
-    @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
     private String city;
 
-    @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
     private String hotelName;
 
     private String roomCode;
 
-    @Size(min = 3, max = 40,
-            message = "Origin must be 3 characters long")
     private String roomType;
 
     @Valid

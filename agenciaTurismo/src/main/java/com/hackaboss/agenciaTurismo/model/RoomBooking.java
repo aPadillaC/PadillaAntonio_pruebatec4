@@ -1,6 +1,7 @@
 package com.hackaboss.agenciaTurismo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,13 +22,13 @@ public class RoomBooking {
     private String bookingCode;
 
     @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE,
-            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+            iso = DateTimeFormat.ISO.DATE)
+    @NotBlank(message = "Date from is mandatory")
     private LocalDate dateFrom;
 
     @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE,
-            fallbackPatterns = {"yyy/MM/dd", "dd-MM-yy", "dd/MM/yyy"})
+            iso = DateTimeFormat.ISO.DATE)
+    @NotBlank(message = "Date to is mandatory")
     private LocalDate dateTo;
 
     private boolean isCompleted;
