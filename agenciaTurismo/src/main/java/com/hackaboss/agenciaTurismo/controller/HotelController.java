@@ -6,6 +6,8 @@ import com.hackaboss.agenciaTurismo.dto.RoomDTO;
 import com.hackaboss.agenciaTurismo.model.Hotel;
 import com.hackaboss.agenciaTurismo.model.Room;
 import com.hackaboss.agenciaTurismo.service.IHotelService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -30,6 +32,10 @@ public class HotelController {
     /**
      * 1. Add hotel
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Successfully added a hotel"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping("/new")
     public ResponseEntity<String> addHotel(@Valid @RequestBody Hotel hotel){
 
@@ -43,6 +49,10 @@ public class HotelController {
     /**
      * 2. Get hotels
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of hotels"),
+            @ApiResponse(responseCode = "404", description = "Hotels not found")
+    })
     @GetMapping
     public ResponseEntity<List<HotelDTO>> getHotels(){
 
@@ -54,6 +64,10 @@ public class HotelController {
     /**
      * 3. Find hotel by id
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Hotel found"),
+            @ApiResponse(responseCode = "404", description = "Hotel not found")
+    })
     @GetMapping("/{hotelId}")
     public ResponseEntity<HotelDTO> getHotelById(@Positive @NotNull @PathVariable Integer hotelId){
 
@@ -65,6 +79,10 @@ public class HotelController {
     /**
      * 4. Add room
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Successfully added a room"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping("/{hotelId}/rooms/new")
     public ResponseEntity<String> addRoom(@Positive @NotNull @PathVariable Integer hotelId, @Valid @RequestBody Room room){
 
@@ -78,6 +96,10 @@ public class HotelController {
     /**
      * 5. Update hotel
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Hotel updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PutMapping("/edit/{hotelId}")
     public ResponseEntity<String> updateHotel(@Positive @NotNull @PathVariable Integer hotelId, @Valid @RequestBody Hotel hotel){
 
@@ -91,6 +113,10 @@ public class HotelController {
     /**
      * 6. Update room
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Room updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PutMapping("/{hotelId}/rooms/edit/{roomId}")
     public ResponseEntity<String> updateRoom(@Positive @NotNull @PathVariable Integer hotelId,
                              @Positive @PathVariable Integer roomId,
@@ -106,6 +132,10 @@ public class HotelController {
     /**
      * 7. Get rooms by hotel id
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of rooms"),
+            @ApiResponse(responseCode = "404", description = "Rooms not found")
+    })
     @GetMapping("/{hotelId}/rooms/{roomId}")
     public ResponseEntity<RoomDTO> getRoomById(@Positive @NotNull @PathVariable Integer hotelId,
                                @Positive @NotNull @PathVariable Integer roomId){
@@ -118,6 +148,10 @@ public class HotelController {
     /**
      * 8. Delete hotel
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Hotel deleted"),
+            @ApiResponse(responseCode = "404", description = "Hotel not found")
+    })
     @DeleteMapping("/delete/{hotelId}")
     public ResponseEntity<String> deleteHotel(@Positive @NotNull @PathVariable Integer hotelId){
 
@@ -131,6 +165,10 @@ public class HotelController {
     /**
      * 9. Delete room
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Room deleted"),
+            @ApiResponse(responseCode = "404", description = "Room not found")
+    })
     @DeleteMapping("/{hotelId}/rooms/delete/{roomId}")
     public ResponseEntity<String> deleteRoom(@Positive @NotNull @PathVariable Integer hotelId,
                              @Positive @NotNull @PathVariable Integer roomId){
@@ -144,6 +182,10 @@ public class HotelController {
     /**
      * 10. Find rooms by city and date
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of rooms"),
+            @ApiResponse(responseCode = "404", description = "Rooms not found")
+    })
     @GetMapping("/rooms")
     public ResponseEntity<List<RoomDTO>> getRoomsByCityAndDate(@RequestParam("city") String city,
                                                @DateTimeFormat(
@@ -163,6 +205,10 @@ public class HotelController {
     /**
      * 11. Add room booking
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Successfully added a room booking"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping("/{roomId}/rooms-booking/new")
     public ResponseEntity<String> addRoomBooking(@Positive @NotNull @PathVariable Integer roomId,
                                  @Valid @RequestBody RoomBookingDTO roomBookingDTO){
@@ -177,6 +223,10 @@ public class HotelController {
     /**
      * 12. Get all room bookings
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of room bookings"),
+            @ApiResponse(responseCode = "404", description = "Room bookings not found")
+    })
     @GetMapping("/rooms-booking")
     public ResponseEntity<List<RoomBookingDTO>> getRoomBookings(){
 
@@ -188,6 +238,10 @@ public class HotelController {
     /**
      * 13. Delete room booking
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Room booking deleted"),
+            @ApiResponse(responseCode = "404", description = "Room booking not found")
+    })
     @DeleteMapping("/rooms-booking/delete/{roomBookingId}")
     public ResponseEntity<String> deleteRoomBooking(@Positive @NotNull @PathVariable Integer roomBookingId){
 
@@ -201,6 +255,10 @@ public class HotelController {
     /**
      * 14. Update room booking
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Room booking updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PutMapping("/rooms-booking/edit/{roomBookingId}")
     public ResponseEntity<String> updateRoomBooking(@Positive @NotNull @PathVariable Integer roomBookingId,
                                     @Valid @RequestBody RoomBookingDTO roomBookingDTO){
@@ -215,6 +273,10 @@ public class HotelController {
     /**
      * 15. Complete room booking
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Room booking completed"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PutMapping("/rooms-booking/complete/{roomBookingId}")
     public ResponseEntity<String> completeRoomBooking(@Positive @NotNull @PathVariable Integer roomBookingId){
 
@@ -228,6 +290,10 @@ public class HotelController {
     /**
      * 16. Add a list of hotels
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Successfully added a list of hotels"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping("/new-list")
     public ResponseEntity<String> addHotelList(@Valid @RequestBody List<Hotel> hotelList){
 
@@ -241,6 +307,10 @@ public class HotelController {
     /**
      * 17. Add a list of rooms to a hotel
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Successfully added a list of rooms"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping("/{hotelId}/rooms/new-list")
     public ResponseEntity<String> addRoomList(@Positive @NotNull @PathVariable Integer hotelId,
                               @Valid @RequestBody List<Room> roomList){
@@ -255,6 +325,10 @@ public class HotelController {
     /**
      * 18. Get room bookings by hotel id
      */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of room bookings"),
+            @ApiResponse(responseCode = "404", description = "Room bookings not found")
+    })
     @GetMapping("/{hotelId}/rooms-booking")
     public ResponseEntity<List<RoomBookingDTO>> getRoomBookingsByHotelId(@Positive @NotNull @PathVariable Integer hotelId){
 

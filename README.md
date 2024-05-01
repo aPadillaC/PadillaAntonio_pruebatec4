@@ -153,7 +153,7 @@
 
 <h2>Uso de Swagger</h2>
 
-<p>Para ver la documentación de la API en Swagger hay que acceder a la url <a>http://localhost:8080/swagger-ui.html</a>. Para las rutas protegidas con la autenticación es necesario validarse, para ello en el archivo applicatio.properties aparece un usuario y contraseña por defecto.</p>
+<p>Para ver la documentación de la API en Swagger hay que acceder a la url <a>http://localhost:8080/swagger-ui.html</a>. Para las rutas protegidas con la autenticación es necesario validarse, para ello en el archivo applicatio.properties aparece un usuario y contraseña por defecto para ello.</p>
 
 
 <!-- SUPUESTOS -->
@@ -170,11 +170,13 @@
 	<br>
 	<li>Para la busqueda de vuelos por por fecha, origen y destino, solo se muestra los resultados que cumplen con la busqueda. Para hacer el viaje de "vuelta" sería necesario invertir el orden de origen y destino tal y como indica la consigna.</li>
 	<br>
-	<li>Se ha desarrollado borrado lógico para toda la aplicación para no perder ningun dato necesario en el futuro a modo de plan de negocio. Cuando se intenta borrar un Hotel, habitación o vuelo y existe una reserva activa en ese momento, se notifica mediante una exceptión. En este caso habría que borrar, o marcar como completada antes de proceder con el borrado lógico.</li>
+	<li>Se ha desarrollado borrado lógico (mediante el campo isDeleted) para toda la aplicación para no perder ningun dato necesario en el futuro a modo de plan de negocio. Cuando se intenta borrar un Hotel, habitación o vuelo y existe una reserva activa en ese momento, se notifica mediante una exceptión. En este caso habría que borrar, o marcar como completada antes de proceder con el borrado lógico.</li>
 	<br>
 	<li>Cuando se edita un hotel cambia automáticamente el codigo de la habitación y del hotel. Lo mismo pasa cuando se edita una habitación que cambia su código. Los códigos de reserva no se ven afectados ya que es un código que posee el cliente y no sería una buena práctica estar informándole de esos cambios que no le corresponde.</li>
 	<br>
 	<li>Para la edición de una reserva de habitación, se ha supuesto que el cliente solamente pueda modificar en este caso las fechas de la reserva. Y para una reserva de un vuelo se podría modificar el tipo de asiento así como el precio del mismo porque cambiaría de categoría.</li>
+	<br>
+	<li>Para las habitaciones se ha utilizado los campos "complete" y "isBooked" respectivamente para especificar que una reserva se ha llevado a cabo y esta finalizada, y para indicar que la habitación tiene reserva todos los días que se encuentra disponible.</li>
 	<br>
 	<li>Se ha desarrollado consultas a la BBDD propias a parte de las proporcionadas por JPA para realizar una mejor optimización.</li>
 	<br>
