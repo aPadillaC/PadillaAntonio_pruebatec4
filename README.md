@@ -153,7 +153,7 @@
 
 <h2>Uso de Swagger</h2>
 
-<p>Para ver la documentación de la API en Swagger hay que acceder a la url <a>http://localhost:8080/swagger-ui.html</a>. Para las rutas protegidas con la autenticación es necesario validarse, para ello en el archivo applicatio.properties aparece un usuario y contraseña por defecto para ello.</p>
+<p>Para ver la documentación de la API en Swagger hay que acceder a la url <a href="http://localhost:8080/doc/swagger-ui/index.html">http://localhost:8080/doc/swagger-ui/index.html</a>. Para las rutas protegidas con la autenticación es necesario validarse, para ello en el archivo applicatio.properties aparece un usuario y contraseña por defecto para ello.</p>
 
 
 <!-- SUPUESTOS -->

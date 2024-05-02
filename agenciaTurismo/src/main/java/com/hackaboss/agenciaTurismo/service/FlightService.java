@@ -25,7 +25,7 @@ public class FlightService implements IFlightService{
 
 
 
-    
+
     public FlightService(FlightRepository flightRepository, ClientRepository clientRepository,
                          FlightBookingRepository flightBookingRepository) {
 

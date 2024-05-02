@@ -40,6 +40,7 @@ public class HotelService implements IHotelService{
     public static final String ENTITY_ROOM_BOOKING = "room booking";
 
 
+
     public HotelService(HotelRepository hotelRepository, RoomBookingRepository roomBookingRepository,
                         RoomRepository roomRepository, ClientRepository clientRepository) {
 
