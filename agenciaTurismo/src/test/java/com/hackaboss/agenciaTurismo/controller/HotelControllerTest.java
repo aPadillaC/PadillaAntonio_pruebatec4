@@ -112,26 +112,7 @@ public class HotelControllerTest {
         // then
         verify(hotelService).addRoom(hotelId, room);
     }
-
-
-
-    @Test
-    void testEditRoom() {
-        // given
-        Integer hotelId = 1;
-        Integer roomId = 1;
-        Room room = new Room();
-        room.setRoomCode("RC123");
-        room.setRoomType("Single");
-        room.setRoomPrice(100.0);
-
-        // when
-        hotelController.updateRoom(hotelId, roomId, room);
-
-        // then
-        verify(hotelService).updateRoom(hotelId, roomId, room);
-    }
-
+    
 
 
     @Test

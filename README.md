@@ -178,6 +178,8 @@
 	<br>
 	<li>Para las habitaciones se ha utilizado los campos "complete" y "isBooked" respectivamente para especificar que una reserva se ha llevado a cabo y esta finalizada, y para indicar que la habitación tiene reserva todos los días que se encuentra disponible.</li>
 	<br>
+	<li>Para la realización de las reservas (tanto de habitaciones como de vuelos) se le pasa por el body un DTO del Booking correspondiente con los datos propios de la reserva ya que el resto de parametros lo obtenemos a partir del Id pasado por el PathVariable.</li>
+	<br>
 	<li>Se ha desarrollado consultas a la BBDD propias a parte de las proporcionadas por JPA para realizar una mejor optimización.</li>
 	<br>
 </ul>
