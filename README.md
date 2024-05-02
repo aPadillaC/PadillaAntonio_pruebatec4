@@ -174,7 +174,7 @@
 	<br>
 	<li>Cuando se edita un hotel cambia automáticamente el codigo de la habitación y del hotel. Lo mismo pasa cuando se edita una habitación que cambia su código. Los códigos de reserva no se ven afectados ya que es un código que posee el cliente y no sería una buena práctica estar informándole de esos cambios que no le corresponde.</li>
 	<br>
-	<li>Para la edición de una reserva de habitación, se ha supuesto que el cliente solamente pueda modificar en este caso las fechas de la reserva. Y para una reserva de un vuelo se podría modificar el tipo de asiento así como el precio del mismo porque cambiaría de categoría.</li>
+	<li>Para la edición de una reserva de habitación, se ha supuesto que el cliente solamente pueda modificar en este caso las fechas de la reserva. Y para una reserva de un vuelo se podría modificar el tipo de asiento así como el precio del mismo porque cambiaría de categoría. El cliente se ha optado por no poder modificar sus datos y tener que optar por ello a cancelar/borrar la reserva y volver a realizarla correctamente.</li>
 	<br>
 	<li>Para las habitaciones se ha utilizado los campos "complete" y "isBooked" respectivamente para especificar que una reserva se ha llevado a cabo y esta finalizada, y para indicar que la habitación tiene reserva todos los días que se encuentra disponible.</li>
 	<br>

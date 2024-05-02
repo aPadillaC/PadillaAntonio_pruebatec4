@@ -112,7 +112,7 @@ public class HotelControllerTest {
         // then
         verify(hotelService).addRoom(hotelId, room);
     }
-    
+
 
 
     @Test

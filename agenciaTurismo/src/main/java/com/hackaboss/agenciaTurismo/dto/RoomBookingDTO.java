@@ -17,6 +17,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class RoomBookingDTO {
 
+    private Integer id;
+
     private String bookingCode;
 
     @DateTimeFormat(
@@ -33,8 +35,6 @@ public class RoomBookingDTO {
 
     private String hotelName;
 
-    private String roomCode;
-
     private String roomType;
 
     @Valid
@@ -44,13 +44,13 @@ public class RoomBookingDTO {
     /**
      * Constructor for get room-Booking
      */
-    public RoomBookingDTO(String bookingCode, LocalDate dateFrom, LocalDate dateTo, String city, String hotelName, String roomCode, String roomType, ClientDTO client) {
+    public RoomBookingDTO(Integer id, String bookingCode, LocalDate dateFrom, LocalDate dateTo, String city, String hotelName, String roomType, ClientDTO client) {
+        this.id = id;
         this.bookingCode = bookingCode;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.city = city;
         this.hotelName = hotelName;
-        this.roomCode = roomCode;
         this.roomType = roomType;
         this.client = client;
     }

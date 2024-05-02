@@ -20,6 +20,8 @@ import java.util.List;
 @NoArgsConstructor
 public class FlightBookingDTO {
 
+    private Integer id;
+
     private String bookingCode;
 
     @DateTimeFormat(
@@ -46,7 +48,8 @@ public class FlightBookingDTO {
     private List<ClientDTO> clientList;
 
     // Constructor for get flight-Booking
-    public FlightBookingDTO(String bookingCode, LocalDate date, String origin, String destination, String seatType, Double seatPrice, List<ClientDTO> clientList) {
+    public FlightBookingDTO(Integer id, String bookingCode, LocalDate date, String origin, String destination, String seatType, Double seatPrice, List<ClientDTO> clientList) {
+        this.id = id;
         this.bookingCode = bookingCode;
         this.date = date;
         this.origin = origin;

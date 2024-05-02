@@ -334,7 +334,7 @@ public class FlightService implements IFlightService{
      */
     FlightBookingDTO toFlightBookingDTO(FlightBooking flightBooking) {
 
-        return new FlightBookingDTO(flightBooking.getBookingCode(), flightBooking.getFlight().getDate(),
+        return new FlightBookingDTO(flightBooking.getId(), flightBooking.getBookingCode(), flightBooking.getFlight().getDate(),
                 flightBooking.getFlight().getOrigin(), flightBooking.getFlight().getDestination(), flightBooking.getSeatType(),
                 flightBooking.getSeatPrice(), flightBooking.getClientList().stream().map(this::toClientDTO).toList());
     }

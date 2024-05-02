@@ -483,6 +483,9 @@ public class HotelService implements IHotelService{
 
 
 
+    /**
+     * DTO when showing the room and their booking list
+     */
     RoomDTO toRoomDTO(Room room){
 
         return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(),
@@ -490,7 +493,9 @@ public class HotelService implements IHotelService{
     }
 
 
-
+    /**
+     * DTO when showing a list of rooms
+     */
     RoomDTO toGetRoomDTO(Room room){
 
         return new RoomDTO(room.getId(), room.getRoomType(), room.getRoomPrice(), room.getRoomCode(), room.getDateFrom(),
@@ -499,6 +504,9 @@ public class HotelService implements IHotelService{
 
 
 
+    /**
+     * DTO when showing the hotel and their rooms
+     */
     HotelDTO toHotelDTO(Hotel hotel){
 
         return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode(),
@@ -506,7 +514,9 @@ public class HotelService implements IHotelService{
     }
 
 
-
+    /**
+     * DTO when showing a list of hotels
+     */
     HotelDTO toGetHotelDTO(Hotel hotel){
 
         return new HotelDTO(hotel.getId(), hotel.getName(), hotel.getCity(), hotel.getHotelCode());
@@ -516,9 +526,9 @@ public class HotelService implements IHotelService{
 
     RoomBookingDTO toRoomBookingDTO(RoomBooking roomBooking){
 
-        return new RoomBookingDTO(roomBooking.getBookingCode(), roomBooking.getDateFrom(), roomBooking.getDateTo(),
-                roomBooking.getRoom().getHotel().getCity(), roomBooking.getRoom().getHotel().getName(),
-                roomBooking.getRoom().getRoomCode(), roomBooking.getRoom().getRoomType(), toClientDTO(roomBooking.getClient()));
+        return new RoomBookingDTO(roomBooking.getId(), roomBooking.getBookingCode(), roomBooking.getDateFrom(), roomBooking.getDateTo(),
+                roomBooking.getRoom().getHotel().getCity(), roomBooking.getRoom().getHotel().getName()
+                , roomBooking.getRoom().getRoomType(), toClientDTO(roomBooking.getClient()));
     }
 
 
