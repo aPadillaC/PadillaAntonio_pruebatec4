@@ -25,7 +25,7 @@ public class FlightService implements IFlightService{
 
 
 
-    @Autowired
+    
     public FlightService(FlightRepository flightRepository, ClientRepository clientRepository,
                          FlightBookingRepository flightBookingRepository) {
 
@@ -253,6 +253,11 @@ public class FlightService implements IFlightService{
 
 
 
+    /*
+      Private methods
+     */
+
+
     private List<Client> getClientsOfBooking(FlightBookingDTO flightBookingDTO) {
 
         List<Client> clientList = new ArrayList<>();
@@ -308,6 +313,10 @@ public class FlightService implements IFlightService{
     }
 
 
+
+    /*
+      DTOs methods are not private by necessity related to tests
+     */
 
     /**
      * Method to convert a Flight object to a FlightDTO object

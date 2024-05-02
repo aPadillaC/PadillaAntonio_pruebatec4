@@ -119,14 +119,6 @@ public class HotelService implements IHotelService{
 
 
 
-    public void updateRoomCode(Hotel hotel){
-
-        IntStream.range(0, hotel.getRooms().size())
-                .forEach(i -> hotel.getRooms().get(i).setRoomCode(hotel.getHotelCode(), i + 1));
-    }
-
-
-
     @Override
     public void updateRoom(Integer hotelId, Integer roomId, Room room) {
 
@@ -399,6 +391,19 @@ public class HotelService implements IHotelService{
 
 
 
+    /*
+      Private methods
+     */
+
+
+    private void updateRoomCode(Hotel hotel){
+
+        IntStream.range(0, hotel.getRooms().size())
+                .forEach(i -> hotel.getRooms().get(i).setRoomCode(hotel.getHotelCode(), i + 1));
+    }
+
+
+
     private Client getClient(ClientDTO clientDTO) {
 
         Client existingClient = clientRepository.findByNifAndNotDeleted(clientDTO.getNif());
@@ -482,6 +487,9 @@ public class HotelService implements IHotelService{
     }
 
 
+    /*
+      DTOs methods are not private by necessity related to tests
+     */
 
     /**
      * DTO when showing the room and their booking list
